@@ -44,6 +44,23 @@ Rapor verisi tarayıcının `localStorage` alanında tutulur; tek dosyalık
 sürümde de **Dışa aktar** / **İçe aktar** çalışır. Kaynak dosyaları
 değiştirdiğinizde paketi yeniden üretmeniz gerekir.
 
+### Gömülü kullanım / Embedded use
+
+Paketleyicinin `--body-only` kipi, belge iskeletini dışarıdan alan
+ortamlar (ör. bir çerçeveye gömme) için yalnızca gövdeyi üretir:
+
+```bash
+python3 tools/bundle.py --body-only build/govde.html
+```
+
+Uygulama gömüldüğü yere iki noktada uyum sağlar; ikisi de bağımsız
+dosyada aynı biçimde çalışmayı sürdürür:
+
+| Ne | Bağımsız dosyada | Gömülüyken |
+|---|---|---|
+| **Tema** | Kayıtlı tercih, yoksa sistem tercihi | Kayıtlı tercih, yoksa saran sayfanın kökteki `data-theme` değeri, yoksa sistem tercihi. Kullanıcının uygulama içindeki seçimi her ikisini de geçer. |
+| **Dışa aktarma** | Tarayıcının kendi indirme yolu | Çerçevenin başlattığı indirme engellendiğinden dosyayı saran sayfa kaydeder; kullanıcı onaylar veya vazgeçer. Vazgeçmek hata sayılmaz, sessizce geçilir. |
+
 ---
 
 ## Uyum ölçeği

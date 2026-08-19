@@ -210,6 +210,9 @@ window.I18N = (function () {
       /* -------- Bildirimler / toasts -------- */
       "toast.saved": "Kaydedildi.",
       "toast.exported": "Rapor dışa aktarıldı.",
+      "toast.exportFailed": "Rapor kaydedilemedi.",
+      "toast.exportTooLarge":
+        "Rapor kaydedilemeyecek kadar büyük. Büyük kanıt dosyalarını dosya yerine bağlantı olarak veriniz.",
       "toast.imported": "Rapor içe aktarıldı.",
       "toast.importError": "Dosya okunamadı. Geçerli bir rapor dosyası seçiniz.",
       "toast.reset": "Rapor sıfırlandı.",
@@ -415,6 +418,9 @@ window.I18N = (function () {
 
       "toast.saved": "Saved.",
       "toast.exported": "Report exported.",
+      "toast.exportFailed": "The report could not be saved.",
+      "toast.exportTooLarge":
+        "The report is too large to save. Provide large evidence files as links rather than uploads.",
       "toast.imported": "Report imported.",
       "toast.importError": "The file could not be read. Select a valid report file.",
       "toast.reset": "Report reset.",

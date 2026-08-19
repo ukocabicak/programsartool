@@ -126,18 +126,48 @@ window.Store = (function () {
     );
   }
 
-  function download(filename) {
-    var blob = new Blob([exportJSON()], { type: "application/json;charset=utf-8" });
+  /** Tarayıcının kendi indirme yolu — bağımsız dosyada kullanılır. */
+  function blobDownload(name, text) {
+    var blob = new Blob([text], { type: "application/json;charset=utf-8" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
-    a.download = filename || defaultFilename();
+    a.download = name;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     setTimeout(function () {
       URL.revokeObjectURL(url);
     }, 1000);
+  }
+
+  /**
+   * Raporu dosya olarak verir; sonucu bildiren bir söz döner.
+   *
+   * Uygulama bir çerçeveye gömüldüğünde çerçevenin kendi başlattığı
+   * indirme engellenir; orada dosyayı saran sayfa kaydeder ve kullanıcıya
+   * bir onay gösterir. Bağımsız dosyada böyle bir saran sayfa yoktur,
+   * tarayıcının kendi indirme yolu kullanılır. Çağıranın tek yapması
+   * gereken sonucu beklemektir: söz çözülürse dosya verilmiştir,
+   * reddedilirse `code` alanı nedeni söyler ("declined" kullanıcının
+   * vazgeçmesidir, hata değildir).
+   */
+  function download(filename) {
+    var name = filename || defaultFilename();
+    var text = exportJSON();
+
+    if (window.claude && typeof window.claude.use === "function") {
+      return window.claude.use("downloads").then(function (downloads) {
+        if (!downloads) {
+          blobDownload(name, text);
+          return { status: "saved" };
+        }
+        return downloads.save({ filename: name, data: text });
+      });
+    }
+
+    blobDownload(name, text);
+    return Promise.resolve({ status: "saved" });
   }
 
   function defaultFilename() {

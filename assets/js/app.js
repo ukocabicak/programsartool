@@ -32,10 +32,18 @@
     // Dil: kayıtlı tercih → Türkçe (varsayılan)
     window.I18N.set(prefs.lang === "en" ? "en" : "tr");
 
-    // Tema: kayıtlı tercih → sistem tercihi
+    /* Tema: kayıtlı tercih → sayfayı saran ortamın kökte duran tercihi →
+       sistem tercihi. Ortadaki adım, uygulama bir belge iskeletini
+       dışarıdan alan yere gömüldüğünde (tek dosyalık gövde paketi)
+       çevresindeki temaya uymasını sağlar; kullanıcının kendi seçimi
+       yine de her ikisini de geçer. */
+    var stamped = document.documentElement.getAttribute("data-theme");
     var theme =
       prefs.theme ||
-      (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      (stamped === "dark" || stamped === "light" ? stamped : null) ||
+      (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light");
     document.documentElement.setAttribute("data-theme", theme);
 
     // Kaldığı yerden devam / resume where the author left off
@@ -130,8 +138,7 @@
       el("span", { class: "btn-label", text: t("header.export") }),
     ]);
     exportBtn.addEventListener("click", function () {
-      S.download();
-      toast(t("toast.exported"), "success");
+      afterDownload(S.download(), "toast.exported");
     });
     host.appendChild(exportBtn);
 
@@ -172,6 +179,22 @@
     host.appendChild(resetBtn);
 
     updateSaveState();
+  }
+
+  /**
+   * Dışa aktarmanın sonucunu bildirir. Kullanıcının vazgeçmesi hata
+   * değildir, sessizce geçilir; kaydetme yapılamadıysa nedeni söylenir.
+   */
+  function afterDownload(promise, okKey) {
+    return promise.then(
+      function () {
+        toast(t(okKey), "success");
+      },
+      function (err) {
+        if (err && err.code === "declined") return;
+        toast(t(err && err.code === "too_large" ? "toast.exportTooLarge" : "toast.exportFailed"), "danger");
+      }
+    );
   }
 
   /** Üst bardaki bağlam: raporun konusu olan program. */
@@ -677,8 +700,7 @@
       document.createTextNode(t("review.download")),
     ]);
     dl.addEventListener("click", function () {
-      S.download();
-      toast(t("toast.exported"), "success");
+      afterDownload(S.download(), "toast.exported");
     });
     var pr = el("button", { type: "button", class: "btn btn--secondary" }, [
       icon("print", "btn__icon"),
@@ -1076,8 +1098,7 @@
 
         el("div", { class: "completion__actions" }, [
           actionButton("done.export", "download", "btn--primary", function () {
-            S.download("yokak-odr-" + no + ".json");
-            toast(t("done.exported"), "success");
+            afterDownload(S.download("yokak-odr-" + no + ".json"), "done.exported");
           }),
           actionButton("done.print", "print", "btn--secondary", function () {
             dlg.close();
