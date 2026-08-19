@@ -1,0 +1,823 @@
+/* ==========================================================================
+   ÖDR'ye özgü bileşenler / Self-Assessment Report components
+   --------------------------------------------------------------------------
+   Ölçüt kartı, uyum ölçeği, uyum özeti, kanıt önerileri ve önizlemedeki
+   alt ölçüt blokları. Tümü tokens.css'teki semantik katmanı kullanır;
+   kurumsal renk değişirse buradaki hiçbir değer elle güncellenmez.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ALT ÖLÇÜT KARTI / sub-criterion card
+   -------------------------------------------------------------------------- */
+/* Ölçüt kartı ve uyum özeti iki sütunlu alan ızgarasını kaplar; ölçüt
+   metni yarım genişlikte okunmaz. */
+.field-grid > .criterion,
+.field-grid > .csum {
+  grid-column: 1 / -1;
+}
+
+.criterion {
+  border: 1px solid var(--color-brand-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-subtle);
+  padding: var(--space-5) var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.criterion__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.criterion__eyebrow {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-muted);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.criterion__code {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-brand);
+  color: var(--color-text-on-brand);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  font-variant-numeric: tabular-nums;
+}
+
+.criterion__text {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-accent);
+  font-weight: var(--weight-medium);
+}
+
+/* İkinci dildeki resmî metin — ölçüt her iki dilde birlikte okunabilmeli. */
+.criterion__text-alt {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-3);
+  padding-left: calc(var(--space-4) + 2px);
+  line-height: var(--leading-snug);
+}
+
+/* Koşulluluk notu — alt ölçüt yalnızca belirli programlar için geçerli. */
+.criterion__scope {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.criterion__scope-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 2px;
+}
+
+.criterion__block {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--color-brand-border);
+}
+
+.criterion__block-title {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.criterion__block-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+  line-height: var(--leading-snug);
+  margin-bottom: var(--space-3);
+}
+
+.criterion__indicators {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  counter-reset: ind;
+  list-style: none;
+}
+
+.criterion__indicators li {
+  position: relative;
+  padding-left: var(--space-8);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: var(--leading-normal);
+  counter-increment: ind;
+}
+
+.criterion__indicators li::before {
+  content: counter(ind);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-subtle);
+  border: 1px solid var(--color-accent-border);
+  color: var(--color-accent);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.criterion__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.criterion__fold {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.criterion__fold-head {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-muted);
+}
+
+.criterion__fold-head::-webkit-details-marker {
+  display: none;
+}
+
+.criterion__fold-head::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: var(--space-2);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.criterion__fold[open] > .criterion__fold-head::before {
+  transform: rotate(90deg);
+}
+
+.criterion__fold-body {
+  padding: 0 var(--space-4) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.criterion__rubrics {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+/* Birincil rubrik karşılığı diğerlerinden ayrılır. */
+.ev-tag--primary {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+  color: var(--color-text-on-brand);
+}
+
+/* --------------------------------------------------------------------------
+   2. UYUM ÖLÇEĞİ / compliance scale
+   Üç düzeyli seçim; koşullu alt ölçütlerde dördüncü seçenek açılır.
+   -------------------------------------------------------------------------- */
+.compliance {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--space-3);
+}
+
+.compliance__option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.compliance__option:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.compliance__option:focus-within {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.compliance__mark {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border-strong);
+  background: var(--color-surface);
+  transition: border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.compliance__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.compliance__label {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.compliance__desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-snug);
+}
+
+/* Seçili durum — her düzey kendi tonuyla imlenir, renk tek ayırt edici
+   işaret değildir: kenarlık kalınlaşır ve işaret dolar. */
+.compliance__option:has(input:checked) {
+  border-width: 2px;
+  padding: calc(var(--space-4) - 1px);
+}
+
+.compliance__option--success:has(input:checked) {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.compliance__option--warning:has(input:checked) {
+  border-color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.compliance__option--danger:has(input:checked) {
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.compliance__option--muted:has(input:checked) {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-sunken);
+}
+
+.compliance__option--success:has(input:checked) .compliance__mark {
+  border-color: var(--color-success);
+  box-shadow: inset 0 0 0 4px var(--color-success);
+}
+
+.compliance__option--warning:has(input:checked) .compliance__mark {
+  border-color: var(--color-warning);
+  box-shadow: inset 0 0 0 4px var(--color-warning);
+}
+
+.compliance__option--danger:has(input:checked) .compliance__mark {
+  border-color: var(--color-danger);
+  box-shadow: inset 0 0 0 4px var(--color-danger);
+}
+
+.compliance__option--muted:has(input:checked) .compliance__mark {
+  border-color: var(--color-text-subtle);
+  box-shadow: inset 0 0 0 4px var(--color-text-subtle);
+}
+
+/* :has desteklemeyen tarayıcılarda seçim yine görünür kalsın. */
+@supports not selector(:has(*)) {
+  .compliance__option input:checked ~ .compliance__mark {
+    border-color: var(--color-brand);
+    box-shadow: inset 0 0 0 4px var(--color-brand);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. UYUM ÖZETİ / compliance summary
+   -------------------------------------------------------------------------- */
+.csum {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.csum__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.csum__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.csum__rate {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.csum__rate strong {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.csum__rate-label {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-muted);
+}
+
+.csum__legend {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-5);
+}
+
+.csum__chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.csum__chip strong {
+  font-size: var(--text-base);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.csum__chip--success {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+.csum__chip--success strong { color: var(--color-success-text); }
+
+.csum__chip--warning {
+  border-color: var(--color-warning);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+.csum__chip--warning strong { color: var(--color-warning-text); }
+
+.csum__chip--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
+.csum__chip--danger strong { color: var(--color-danger-text); }
+
+.csum__chip--muted,
+.csum__chip--empty {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-sunken);
+}
+
+.csum__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.csum__rows-title {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.csum__row {
+  display: grid;
+  grid-template-columns: 2.5ch minmax(0, 1fr) minmax(120px, 34%) 5ch;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.csum__row:hover {
+  background: var(--color-surface-sunken);
+  border-color: var(--color-border);
+}
+
+.csum__row:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+
+.csum__row-code {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-brand);
+  font-variant-numeric: tabular-nums;
+}
+
+.csum__row-name {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.csum__row-pct {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+/* Yığılmış çubuk — bir ana ölçütteki alt ölçütlerin uyum dağılımı. */
+.csum__bar {
+  display: flex;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+}
+
+.csum__seg { display: block; min-width: 3px; }
+.csum__seg--success { background: var(--color-success); }
+.csum__seg--warning { background: var(--color-warning); }
+.csum__seg--danger { background: var(--color-danger); }
+.csum__seg--muted { background: var(--color-border-strong); }
+.csum__seg--empty { background: transparent; }
+
+/* --------------------------------------------------------------------------
+   4. KANIT ÖNERİLERİ / expected evidence suggestions
+   -------------------------------------------------------------------------- */
+.ev-suggest {
+  margin-top: var(--space-3);
+}
+
+.ev-suggest__wrap {
+  border: 1px dashed var(--color-accent-border);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-subtle);
+}
+
+.ev-suggest__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-hover);
+}
+
+.ev-suggest__head::-webkit-details-marker {
+  display: none;
+}
+
+.ev-suggest__body {
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.ev-suggest__hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-snug);
+  margin-bottom: var(--space-3);
+}
+
+.ev-suggest__chips {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.ev-suggest__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-xs);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.ev-suggest__chip:hover {
+  border-color: var(--color-accent);
+  background: var(--color-surface-raised);
+}
+
+.ev-suggest__chip--used {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.ev-suggest__tick {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+/* --------------------------------------------------------------------------
+   5. ETİKET SEÇİCİ — alt ölçüt sayısı çok olduğundan katlanır
+   -------------------------------------------------------------------------- */
+.ev-tagpicker__group {
+  display: block;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  padding: var(--space-2) var(--space-3);
+}
+
+.ev-tagpicker__group-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.ev-tagpicker__group-label::-webkit-details-marker {
+  display: none;
+}
+
+.ev-tagpicker__group-label::before {
+  content: "▸";
+  flex: none;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.ev-tagpicker__group[open] > .ev-tagpicker__group-label::before {
+  transform: rotate(90deg);
+}
+
+.ev-tagpicker__group-count {
+  margin-inline-start: auto;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-variant-numeric: tabular-nums;
+}
+
+.ev-tagpicker__group[open] > .ev-tagpicker__chips {
+  margin-top: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   6. ALAN ÖNERİSİ / derived field suggestion (ISCED kodu)
+   -------------------------------------------------------------------------- */
+.field__suggest {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px dashed var(--color-accent-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-hover);
+  font-size: var(--text-xs);
+  text-align: start;
+  cursor: pointer;
+}
+
+.field__suggest:hover {
+  border-style: solid;
+}
+
+.field__suggest-icon {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+.field__suggest-text strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   7. ÖNİZLEMEDE ALT ÖLÇÜT BLOKLARI / review sub-criterion blocks
+   -------------------------------------------------------------------------- */
+.review-sub {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+  break-inside: avoid;
+}
+
+.review-sub__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.review-sub__code {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--color-brand);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+.review-sub__text {
+  flex: 1 1 20ch;
+  min-width: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.compliance-badge {
+  flex: none;
+  padding: 1px var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+
+.compliance-badge--success {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.compliance-badge--warning {
+  border-color: var(--color-warning);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.compliance-badge--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
+
+.review-sub__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.review-sub__body:not(:empty) {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-border);
+}
+
+.review-sub__block-label {
+  display: block;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-subtle);
+  margin-bottom: var(--space-1);
+}
+
+.review-sub__block-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+  white-space: pre-wrap;
+}
+
+/* --------------------------------------------------------------------------
+   8. BASKI / print
+   Rapor tarayıcının "PDF olarak kaydet" akışıyla üretilir; ekran kromu
+   basılmaz, ölçüt blokları sayfa ortasından bölünmez.
+   -------------------------------------------------------------------------- */
+@media print {
+  .criterion,
+  .csum,
+  .review-sub,
+  .review-group {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+
+  .ev-suggest,
+  .field__suggest,
+  .csum__row:hover {
+    display: none;
+  }
+
+  .csum__row {
+    cursor: default;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. DAR EKRAN / narrow screens
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .compliance {
+    grid-template-columns: 1fr;
+  }
+
+  .csum__row {
+    grid-template-columns: 2.5ch minmax(0, 1fr) 5ch;
+  }
+
+  .csum__bar {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Hareket azaltma tercihi / reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .compliance__option,
+  .criterion__fold-head::before,
+  .ev-tagpicker__group-label::before {
+    transition: none;
+  }
+
+  .compliance__option:hover {
+    transform: none;
+  }
+}
