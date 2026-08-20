@@ -369,6 +369,14 @@
   display: none;
 }
 
+/* Ok düğmesiyle ve sekme değişiminde yumuşak kaydırma; hareketi azaltan
+   kullanıcıda anında atlar. */
+@media (prefers-reduced-motion: no-preference) {
+  .tabbar {
+    scroll-behavior: smooth;
+  }
+}
+
 .tab {
   position: relative;
   display: flex;

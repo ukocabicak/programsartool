@@ -194,7 +194,15 @@ window.SCHEMA = (function () {
   function criterionTab(main) {
     return {
       id: "c" + main.code,
+      /* Tam ad; adım başlığında, kenar çubuğunda, önizlemede ve sekmenin
+         ipucunda görünür. */
       label: { tr: main.code + ". " + main.title.tr, en: main.code + ". " + main.title.en },
+      /* Sekme çubuğundaki kısa ad. Ölçüt adları resmî hâlleriyle uzundur;
+         çubukta yan yana kaç sekme görüneceğini bu belirler. */
+      short: {
+        tr: main.code + ". " + main.shortTitle.tr,
+        en: main.code + ". " + main.shortTitle.en,
+      },
       sublabel: {
         tr: main.subs.length + " alt ölçüt",
         en: main.subs.length + " sub-criteria",

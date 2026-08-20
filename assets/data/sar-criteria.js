@@ -79,6 +79,7 @@ window.SAR = (function () {
       no: 1,
       code: "1",
       title: { tr: "Kalite Güvencesi Politikası ve Yönetişim", en: "Quality Assurance Policy and Governance" },
+      shortTitle: { tr: "Kalite Güvencesi", en: "Quality Assurance" },
       subs: [
         {
           code: "1.1",
@@ -277,6 +278,7 @@ window.SAR = (function () {
       no: 2,
       code: "2",
       title: { tr: "Programın Tasarımı, Onayı, İzlenmesi ve Güncellenmesi", en: "Design, Approval, Monitoring and Updating of the Programme" },
+      shortTitle: { tr: "Program Tasarımı", en: "Programme Design" },
       subs: [
         {
           code: "2.1",
@@ -513,6 +515,7 @@ window.SAR = (function () {
       no: 3,
       code: "3",
       title: { tr: "Öğrenci Merkezli Öğrenme, Öğretme ve Ölçme-Değerlendirme", en: "Student-Centred Learning, Teaching and Assessment" },
+      shortTitle: { tr: "Öğrenci Merkezli Öğrenme", en: "Student-Centred Learning" },
       subs: [
         {
           code: "3.1",
@@ -772,6 +775,7 @@ window.SAR = (function () {
       no: 4,
       code: "4",
       title: { tr: "Öğrenci Kabulü, İlerlemesi, Tanınma ve Mezuniyet", en: "Student Admission, Progression, Recognition and Certification" },
+      shortTitle: { tr: "Öğrenci Yaşam Döngüsü", en: "Student Life Cycle" },
       subs: [
         {
           code: "4.1",
@@ -969,6 +973,7 @@ window.SAR = (function () {
       no: 5,
       code: "5",
       title: { tr: "Öğretim Kadrosu ve Eğitim-Öğretimi Destekleyen Personel", en: "Teaching Staff and Personnel Supporting Learning and Teaching" },
+      shortTitle: { tr: "Öğretim Kadrosu", en: "Teaching Staff" },
       subs: [
         {
           code: "5.1",
@@ -1206,6 +1211,7 @@ window.SAR = (function () {
       no: 6,
       code: "6",
       title: { tr: "Öğrenme Ortamı, Kaynaklar ve Öğrenci Desteği", en: "Learning Environment, Resources and Student Support" },
+      shortTitle: { tr: "Öğrenme Ortamı", en: "Learning Environment" },
       subs: [
         {
           code: "6.1",
@@ -1396,6 +1402,7 @@ window.SAR = (function () {
       no: 7,
       code: "7",
       title: { tr: "Bilgi Yönetimi ve Sürekli İyileştirme", en: "Information Management and Continuous Improvement" },
+      shortTitle: { tr: "Bilgi Yönetimi", en: "Information Management" },
       subs: [
         {
           code: "7.1",
@@ -1605,6 +1612,7 @@ window.SAR = (function () {
       no: 8,
       code: "8",
       title: { tr: "Kamuoyunu Bilgilendirme ve Şeffaflık", en: "Public Information and Transparency" },
+      shortTitle: { tr: "Kamuoyunu Bilgilendirme", en: "Public Information" },
       subs: [
         {
           code: "8.1",
@@ -1829,6 +1837,7 @@ window.SAR = (function () {
       no: 9,
       code: "9",
       title: { tr: "Dış Kalite Güvencesi (Kurumsal ve/veya Program) ve Akreditasyon Döngüsü", en: "External Quality Assurance (Institutional and/or Programme) and the Accreditation Cycle" },
+      shortTitle: { tr: "Dış Kalite Güvencesi", en: "External Quality Assurance" },
       subs: [
         {
           code: "9.1",

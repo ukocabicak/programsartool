@@ -11,7 +11,7 @@ window.I18N = (function () {
   var STRINGS = {
     tr: {
       "app.title": "Program Öz Değerlendirme Raporu Sistemi",
-      "app.subtitle": "YÖKAK · Program Akreditasyonu Ölçütleri",
+      "app.subtitle": "Program Öz Değerlendirme Sistemi",
 
       "header.report": "Rapor",
       "header.noProgramme": "Program tanımlanmadı",
@@ -31,6 +31,8 @@ window.I18N = (function () {
       "nav.progress": "Tamamlanma",
       "nav.next": "Sonraki adım",
       "nav.prev": "Önceki adım",
+      "nav.tabsPrev": "Önceki bölümleri göster",
+      "nav.tabsNext": "Sonraki bölümleri göster",
       "nav.submit": "Raporu Tamamla",
 
       "summary.title": "Rapor Özeti",
@@ -227,7 +229,7 @@ window.I18N = (function () {
 
     en: {
       "app.title": "Programme Self-Assessment Report System",
-      "app.subtitle": "YÖKAK · Programme Accreditation Criteria",
+      "app.subtitle": "Programme Self-Assessment System",
 
       "header.report": "Report",
       "header.noProgramme": "No programme defined",
@@ -247,6 +249,8 @@ window.I18N = (function () {
       "nav.progress": "Completion",
       "nav.next": "Next step",
       "nav.prev": "Previous step",
+      "nav.tabsPrev": "Show previous sections",
+      "nav.tabsNext": "Show next sections",
       "nav.submit": "Complete Report",
 
       "summary.title": "Report Summary",

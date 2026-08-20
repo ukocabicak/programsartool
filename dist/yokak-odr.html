@@ -921,6 +921,14 @@ legend {
   display: none;
 }
 
+/* Ok düğmesiyle ve sekme değişiminde yumuşak kaydırma; hareketi azaltan
+   kullanıcıda anında atlar. */
+@media (prefers-reduced-motion: no-preference) {
+  .tabbar {
+    scroll-behavior: smooth;
+  }
+}
+
 .tab {
   position: relative;
   display: flex;
@@ -2880,6 +2888,106 @@ legend {
   z-index: var(--z-sticky);
 }
 
+/* --------------------------------------------------------------------------
+   Sekme çubuğu kaydırma rayı / tab bar scroll rail
+
+   Dokuz ölçüt sekmesi çubuğa aynı anda sığmaz. Dokunmatikte parmakla
+   kaydırılır; farede görünür bir tutamak olmadığından iki uçta ok
+   düğmeleri durur. Oklar yalnızca o yönde kaydırılacak sekme kaldığında
+   belirir, altlarındaki geçiş de sekmelerin devam ettiğini gösterir.
+   -------------------------------------------------------------------------- */
+.tabbar-rail {
+  position: relative;
+}
+
+.tabbar-scroll {
+  position: absolute;
+  top: 0;
+  bottom: 1px; /* çubuğun alt çizgisi görünmeye devam etsin */
+  width: 52px;
+  /* Çubuk .glass olduğu için konumlandırılmıştır ve DOM'da soldaki oktan
+     sonra gelir; z-index verilmezse o ok çubuğun altında kalır ve
+     tıklamayı sekmeler yakalar. */
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  border: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.tabbar-scroll--prev {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: var(--space-2);
+  background: linear-gradient(
+    to right,
+    var(--color-surface) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.tabbar-scroll--next {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: var(--space-2);
+  background: linear-gradient(
+    to left,
+    var(--color-surface) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Ok yalnızca o yönde gidilecek yer varken tıklanabilir olur. */
+.tabbar-rail[data-overflow~="prev"] .tabbar-scroll--prev,
+.tabbar-rail[data-overflow~="next"] .tabbar-scroll--next {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tabbar-scroll:hover {
+  color: var(--color-brand);
+}
+
+.tabbar-scroll:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.tabbar-scroll svg {
+  width: 20px;
+  height: 20px;
+  /* Yüzeyden ayrılsın: geçişin üstünde küçük bir daire üzerinde durur. */
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  padding: 3px;
+}
+
+/* Ok göründüğünde altındaki sekme yarım kalmasın diye çubuğun kendi
+   iç boşluğu genişler. */
+.tabbar-rail[data-overflow~="prev"] .tabbar {
+  scroll-padding-left: 52px;
+}
+
+.tabbar-rail[data-overflow~="next"] .tabbar {
+  scroll-padding-right: 52px;
+}
+
+/* Dokunmatikte çubuk zaten parmakla kaydırılıyor; oklar yalnızca yer
+   kaplar. Ayrım ekran genişliğine değil imleç türüne bakar — dar bir
+   masaüstü penceresinde de oklar gerekir. */
+@media (pointer: coarse) {
+  .tabbar-scroll {
+    display: none;
+  }
+}
+
 .step-view {
   padding: var(--space-8) var(--space-8) var(--space-16);
   max-width: 960px;
@@ -4323,7 +4431,7 @@ legend {
           />
           <span class="brand__text">
             <span class="brand__name">YÖKAK</span>
-            <span class="brand__sub" id="brand-sub">Program Akreditasyonu Ölçütleri</span>
+            <span class="brand__sub" id="brand-sub">Program Öz Değerlendirme Sistemi</span>
           </span>
         </a>
 
@@ -4347,7 +4455,27 @@ legend {
 
         <main class="app-main">
           <div class="tabbar-wrap">
-            <nav class="tabbar glass" id="tabbar"></nav>
+            <!-- Kaydırma okları yalnızca fare içindir: klavye zaten sekme
+                 çubuğunda ok tuşlarıyla geziniyor, ekran okuyucu da sekme
+                 listesini doğrudan okuyor. Bu yüzden odak sırasına
+                 girmezler. -->
+            <div class="tabbar-rail" id="tabbar-rail">
+              <button
+                type="button"
+                class="tabbar-scroll tabbar-scroll--prev"
+                id="tabbar-prev"
+                tabindex="-1"
+                aria-hidden="true"
+              ></button>
+              <nav class="tabbar glass" id="tabbar"></nav>
+              <button
+                type="button"
+                class="tabbar-scroll tabbar-scroll--next"
+                id="tabbar-next"
+                tabindex="-1"
+                aria-hidden="true"
+              ></button>
+            </div>
             <div id="topprogress"></div>
           </div>
 
@@ -4378,7 +4506,7 @@ window.I18N = (function () {
   var STRINGS = {
     tr: {
       "app.title": "Program Öz Değerlendirme Raporu Sistemi",
-      "app.subtitle": "YÖKAK · Program Akreditasyonu Ölçütleri",
+      "app.subtitle": "Program Öz Değerlendirme Sistemi",
 
       "header.report": "Rapor",
       "header.noProgramme": "Program tanımlanmadı",
@@ -4398,6 +4526,8 @@ window.I18N = (function () {
       "nav.progress": "Tamamlanma",
       "nav.next": "Sonraki adım",
       "nav.prev": "Önceki adım",
+      "nav.tabsPrev": "Önceki bölümleri göster",
+      "nav.tabsNext": "Sonraki bölümleri göster",
       "nav.submit": "Raporu Tamamla",
 
       "summary.title": "Rapor Özeti",
@@ -4594,7 +4724,7 @@ window.I18N = (function () {
 
     en: {
       "app.title": "Programme Self-Assessment Report System",
-      "app.subtitle": "YÖKAK · Programme Accreditation Criteria",
+      "app.subtitle": "Programme Self-Assessment System",
 
       "header.report": "Report",
       "header.noProgramme": "No programme defined",
@@ -4614,6 +4744,8 @@ window.I18N = (function () {
       "nav.progress": "Completion",
       "nav.next": "Next step",
       "nav.prev": "Previous step",
+      "nav.tabsPrev": "Show previous sections",
+      "nav.tabsNext": "Show next sections",
       "nav.submit": "Complete Report",
 
       "summary.title": "Report Summary",
@@ -5035,6 +5167,7 @@ window.SAR = (function () {
       no: 1,
       code: "1",
       title: { tr: "Kalite Güvencesi Politikası ve Yönetişim", en: "Quality Assurance Policy and Governance" },
+      shortTitle: { tr: "Kalite Güvencesi", en: "Quality Assurance" },
       subs: [
         {
           code: "1.1",
@@ -5233,6 +5366,7 @@ window.SAR = (function () {
       no: 2,
       code: "2",
       title: { tr: "Programın Tasarımı, Onayı, İzlenmesi ve Güncellenmesi", en: "Design, Approval, Monitoring and Updating of the Programme" },
+      shortTitle: { tr: "Program Tasarımı", en: "Programme Design" },
       subs: [
         {
           code: "2.1",
@@ -5469,6 +5603,7 @@ window.SAR = (function () {
       no: 3,
       code: "3",
       title: { tr: "Öğrenci Merkezli Öğrenme, Öğretme ve Ölçme-Değerlendirme", en: "Student-Centred Learning, Teaching and Assessment" },
+      shortTitle: { tr: "Öğrenci Merkezli Öğrenme", en: "Student-Centred Learning" },
       subs: [
         {
           code: "3.1",
@@ -5728,6 +5863,7 @@ window.SAR = (function () {
       no: 4,
       code: "4",
       title: { tr: "Öğrenci Kabulü, İlerlemesi, Tanınma ve Mezuniyet", en: "Student Admission, Progression, Recognition and Certification" },
+      shortTitle: { tr: "Öğrenci Yaşam Döngüsü", en: "Student Life Cycle" },
       subs: [
         {
           code: "4.1",
@@ -5925,6 +6061,7 @@ window.SAR = (function () {
       no: 5,
       code: "5",
       title: { tr: "Öğretim Kadrosu ve Eğitim-Öğretimi Destekleyen Personel", en: "Teaching Staff and Personnel Supporting Learning and Teaching" },
+      shortTitle: { tr: "Öğretim Kadrosu", en: "Teaching Staff" },
       subs: [
         {
           code: "5.1",
@@ -6162,6 +6299,7 @@ window.SAR = (function () {
       no: 6,
       code: "6",
       title: { tr: "Öğrenme Ortamı, Kaynaklar ve Öğrenci Desteği", en: "Learning Environment, Resources and Student Support" },
+      shortTitle: { tr: "Öğrenme Ortamı", en: "Learning Environment" },
       subs: [
         {
           code: "6.1",
@@ -6352,6 +6490,7 @@ window.SAR = (function () {
       no: 7,
       code: "7",
       title: { tr: "Bilgi Yönetimi ve Sürekli İyileştirme", en: "Information Management and Continuous Improvement" },
+      shortTitle: { tr: "Bilgi Yönetimi", en: "Information Management" },
       subs: [
         {
           code: "7.1",
@@ -6561,6 +6700,7 @@ window.SAR = (function () {
       no: 8,
       code: "8",
       title: { tr: "Kamuoyunu Bilgilendirme ve Şeffaflık", en: "Public Information and Transparency" },
+      shortTitle: { tr: "Kamuoyunu Bilgilendirme", en: "Public Information" },
       subs: [
         {
           code: "8.1",
@@ -6785,6 +6925,7 @@ window.SAR = (function () {
       no: 9,
       code: "9",
       title: { tr: "Dış Kalite Güvencesi (Kurumsal ve/veya Program) ve Akreditasyon Döngüsü", en: "External Quality Assurance (Institutional and/or Programme) and the Accreditation Cycle" },
+      shortTitle: { tr: "Dış Kalite Güvencesi", en: "External Quality Assurance" },
       subs: [
         {
           code: "9.1",
@@ -9156,7 +9297,15 @@ window.SCHEMA = (function () {
   function criterionTab(main) {
     return {
       id: "c" + main.code,
+      /* Tam ad; adım başlığında, kenar çubuğunda, önizlemede ve sekmenin
+         ipucunda görünür. */
       label: { tr: main.code + ". " + main.title.tr, en: main.code + ". " + main.title.en },
+      /* Sekme çubuğundaki kısa ad. Ölçüt adları resmî hâlleriyle uzundur;
+         çubukta yan yana kaç sekme görüneceğini bu belirler. */
+      short: {
+        tr: main.code + ". " + main.shortTitle.tr,
+        en: main.code + ". " + main.shortTitle.en,
+      },
       sublabel: {
         tr: main.subs.length + " alt ölçüt",
         en: main.subs.length + " sub-criteria",
@@ -9931,6 +10080,8 @@ window.Fields = (function () {
     print: '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/>',
     send: '<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
     file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+    chevronLeft: '<path d="m15 18-6-6 6-6"/>',
+    chevronRight: '<path d="m9 18 6-6-6-6"/>',
   };
 
   function icon(name, cls) {
@@ -11969,6 +12120,7 @@ window.Fields = (function () {
     });
 
     buildHeader();
+    initTabScroll();
     buildTabs();
     render();
     bindKeys();
@@ -11983,7 +12135,7 @@ window.Fields = (function () {
      ================================================================== */
   function buildHeader() {
     // Sabit başlık metinlerini de dile uydur
-    document.getElementById("brand-sub").textContent = t("app.subtitle").split("·").pop().trim();
+    document.getElementById("brand-sub").textContent = t("app.subtitle");
     var skip = document.querySelector(".skip-link");
     if (skip) skip.textContent = t("a11y.skip");
     document.getElementById("ctx-label").textContent = t("header.report");
@@ -12133,6 +12285,9 @@ window.Fields = (function () {
      ================================================================== */
   function buildTabs() {
     var bar = document.getElementById("tabbar");
+    /* Çubuk her veri değişiminde yeniden kurulur; kaydırma konumu
+       korunmazsa kullanıcı yazarken çubuk sürekli başa dönerdi. */
+    var scrollLeft = bar.scrollLeft;
     bar.innerHTML = "";
     bar.setAttribute("role", "tablist");
     bar.setAttribute("aria-label", t("a11y.tabs"));
@@ -12156,13 +12311,16 @@ window.Fields = (function () {
       else index.textContent = String(i + 1);
       btn.appendChild(index);
 
+      /* Çubukta kısa ad durur; tam ad ipucunda, adım başlığında ve kenar
+         çubuğunda okunmayı sürdürür. */
       var labelBox = el("span", { class: "tab__label" }, [
-        el("span", { class: "tab__label-main", text: pick(tab.label) }),
+        el("span", { class: "tab__label-main", text: pick(tab.short || tab.label) }),
         el("span", {
           class: "tab__label-sub",
           text: tab.sublabel ? pick(tab.sublabel) : "",
         }),
       ]);
+      btn.setAttribute("title", pick(tab.label));
       btn.appendChild(labelBox);
 
       btn.addEventListener("click", function () {
@@ -12170,6 +12328,92 @@ window.Fields = (function () {
       });
       bar.appendChild(btn);
     });
+
+    /* Yeniden kurulduğu için kaydırma konumu elle geri verilir. Etkin
+       sekme değiştiyse konum korunmaz, yeni sekme görünüre getirilir. */
+    if (state.tab === lastScrolledTab) {
+      bar.scrollLeft = scrollLeft;
+    } else {
+      lastScrolledTab = state.tab;
+      revealActiveTab();
+    }
+    syncTabScroll();
+  }
+
+  /* ==================================================================
+     Sekme çubuğu kaydırması / tab bar scrolling
+
+     Sekmeler çubuğa sığmadığında dokunmatikte parmakla kaydırılır. Fare
+     kullanıcısında görünür bir tutamak olmadığından üç yol açılır: iki
+     uçtaki ok düğmeleri, tekerleğin yatay kaydırmaya bağlanması ve etkin
+     sekmenin adım geçişlerinde kendiliğinden görünüre gelmesi. Klavye
+     zaten ok tuşlarıyla sekmeler arasında geziniyor.
+     ================================================================== */
+  var lastScrolledTab = -1;
+
+  /** Çubuğun iki ucunda kaydırılacak yer kaldı mı? */
+  function syncTabScroll() {
+    var bar = document.getElementById("tabbar");
+    var rail = document.getElementById("tabbar-rail");
+    if (!bar || !rail) return;
+    /* Kesirli piksellerde son sekme "bir tık" uzakta görünür; bir
+       piksellik pay bunu yutar. */
+    var max = bar.scrollWidth - bar.clientWidth;
+    var tokens = [];
+    if (bar.scrollLeft > 1) tokens.push("prev");
+    if (bar.scrollLeft < max - 1) tokens.push("next");
+    rail.setAttribute("data-overflow", tokens.join(" "));
+  }
+
+  /** Etkin sekmeyi çubukta görünür kılar. */
+  function revealActiveTab() {
+    var bar = document.getElementById("tabbar");
+    if (!bar) return;
+    var btn = bar.children[state.tab];
+    if (!btn) return;
+    /* scrollIntoView sayfayı da kaydırabildiğinden konum elle hesaplanır:
+       sekmeyi çubuğun ortasına yaklaştır, uçlarda taşmayı kırp. */
+    var target = btn.offsetLeft - (bar.clientWidth - btn.offsetWidth) / 2;
+    bar.scrollLeft = Math.max(0, Math.min(target, bar.scrollWidth - bar.clientWidth));
+  }
+
+  function initTabScroll() {
+    var bar = document.getElementById("tabbar");
+    var rail = document.getElementById("tabbar-rail");
+    if (!bar || !rail) return;
+
+    [
+      { id: "tabbar-prev", dir: -1, iconName: "chevronLeft", key: "nav.tabsPrev" },
+      { id: "tabbar-next", dir: 1, iconName: "chevronRight", key: "nav.tabsNext" },
+    ].forEach(function (spec) {
+      var btn = document.getElementById(spec.id);
+      if (!btn) return;
+      btn.innerHTML = "";
+      btn.appendChild(icon(spec.iconName));
+      btn.setAttribute("title", t(spec.key));
+      btn.addEventListener("click", function () {
+        // Bir tam ekran değil, çoğunu kaydır: kenardaki sekme bağlam kalsın.
+        bar.scrollLeft += spec.dir * bar.clientWidth * 0.8;
+      });
+    });
+
+    bar.addEventListener("scroll", syncTabScroll, { passive: true });
+
+    /* Dikey tekerleği yatay kaydırmaya çevir. Yatay tekerleği olan fareler
+       ve izleme yüzeyleri kendi eksenlerinde çalışmayı sürdürür. */
+    bar.addEventListener(
+      "wheel",
+      function (e) {
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        if (bar.scrollWidth <= bar.clientWidth) return;
+        e.preventDefault();
+        bar.scrollLeft += e.deltaY;
+      },
+      { passive: false }
+    );
+
+    window.addEventListener("resize", syncTabScroll);
+    syncTabScroll();
   }
 
   /* ==================================================================

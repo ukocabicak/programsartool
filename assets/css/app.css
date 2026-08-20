@@ -233,6 +233,106 @@
   z-index: var(--z-sticky);
 }
 
+/* --------------------------------------------------------------------------
+   Sekme çubuğu kaydırma rayı / tab bar scroll rail
+
+   Dokuz ölçüt sekmesi çubuğa aynı anda sığmaz. Dokunmatikte parmakla
+   kaydırılır; farede görünür bir tutamak olmadığından iki uçta ok
+   düğmeleri durur. Oklar yalnızca o yönde kaydırılacak sekme kaldığında
+   belirir, altlarındaki geçiş de sekmelerin devam ettiğini gösterir.
+   -------------------------------------------------------------------------- */
+.tabbar-rail {
+  position: relative;
+}
+
+.tabbar-scroll {
+  position: absolute;
+  top: 0;
+  bottom: 1px; /* çubuğun alt çizgisi görünmeye devam etsin */
+  width: 52px;
+  /* Çubuk .glass olduğu için konumlandırılmıştır ve DOM'da soldaki oktan
+     sonra gelir; z-index verilmezse o ok çubuğun altında kalır ve
+     tıklamayı sekmeler yakalar. */
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  border: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.tabbar-scroll--prev {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: var(--space-2);
+  background: linear-gradient(
+    to right,
+    var(--color-surface) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.tabbar-scroll--next {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: var(--space-2);
+  background: linear-gradient(
+    to left,
+    var(--color-surface) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Ok yalnızca o yönde gidilecek yer varken tıklanabilir olur. */
+.tabbar-rail[data-overflow~="prev"] .tabbar-scroll--prev,
+.tabbar-rail[data-overflow~="next"] .tabbar-scroll--next {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tabbar-scroll:hover {
+  color: var(--color-brand);
+}
+
+.tabbar-scroll:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.tabbar-scroll svg {
+  width: 20px;
+  height: 20px;
+  /* Yüzeyden ayrılsın: geçişin üstünde küçük bir daire üzerinde durur. */
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  padding: 3px;
+}
+
+/* Ok göründüğünde altındaki sekme yarım kalmasın diye çubuğun kendi
+   iç boşluğu genişler. */
+.tabbar-rail[data-overflow~="prev"] .tabbar {
+  scroll-padding-left: 52px;
+}
+
+.tabbar-rail[data-overflow~="next"] .tabbar {
+  scroll-padding-right: 52px;
+}
+
+/* Dokunmatikte çubuk zaten parmakla kaydırılıyor; oklar yalnızca yer
+   kaplar. Ayrım ekran genişliğine değil imleç türüne bakar — dar bir
+   masaüstü penceresinde de oklar gerekir. */
+@media (pointer: coarse) {
+  .tabbar-scroll {
+    display: none;
+  }
+}
+
 .step-view {
   padding: var(--space-8) var(--space-8) var(--space-16);
   max-width: 960px;

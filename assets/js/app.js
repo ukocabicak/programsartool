@@ -65,6 +65,7 @@
     });
 
     buildHeader();
+    initTabScroll();
     buildTabs();
     render();
     bindKeys();
@@ -79,7 +80,7 @@
      ================================================================== */
   function buildHeader() {
     // Sabit başlık metinlerini de dile uydur
-    document.getElementById("brand-sub").textContent = t("app.subtitle").split("·").pop().trim();
+    document.getElementById("brand-sub").textContent = t("app.subtitle");
     var skip = document.querySelector(".skip-link");
     if (skip) skip.textContent = t("a11y.skip");
     document.getElementById("ctx-label").textContent = t("header.report");
@@ -229,6 +230,9 @@
      ================================================================== */
   function buildTabs() {
     var bar = document.getElementById("tabbar");
+    /* Çubuk her veri değişiminde yeniden kurulur; kaydırma konumu
+       korunmazsa kullanıcı yazarken çubuk sürekli başa dönerdi. */
+    var scrollLeft = bar.scrollLeft;
     bar.innerHTML = "";
     bar.setAttribute("role", "tablist");
     bar.setAttribute("aria-label", t("a11y.tabs"));
@@ -252,13 +256,16 @@
       else index.textContent = String(i + 1);
       btn.appendChild(index);
 
+      /* Çubukta kısa ad durur; tam ad ipucunda, adım başlığında ve kenar
+         çubuğunda okunmayı sürdürür. */
       var labelBox = el("span", { class: "tab__label" }, [
-        el("span", { class: "tab__label-main", text: pick(tab.label) }),
+        el("span", { class: "tab__label-main", text: pick(tab.short || tab.label) }),
         el("span", {
           class: "tab__label-sub",
           text: tab.sublabel ? pick(tab.sublabel) : "",
         }),
       ]);
+      btn.setAttribute("title", pick(tab.label));
       btn.appendChild(labelBox);
 
       btn.addEventListener("click", function () {
@@ -266,6 +273,92 @@
       });
       bar.appendChild(btn);
     });
+
+    /* Yeniden kurulduğu için kaydırma konumu elle geri verilir. Etkin
+       sekme değiştiyse konum korunmaz, yeni sekme görünüre getirilir. */
+    if (state.tab === lastScrolledTab) {
+      bar.scrollLeft = scrollLeft;
+    } else {
+      lastScrolledTab = state.tab;
+      revealActiveTab();
+    }
+    syncTabScroll();
+  }
+
+  /* ==================================================================
+     Sekme çubuğu kaydırması / tab bar scrolling
+
+     Sekmeler çubuğa sığmadığında dokunmatikte parmakla kaydırılır. Fare
+     kullanıcısında görünür bir tutamak olmadığından üç yol açılır: iki
+     uçtaki ok düğmeleri, tekerleğin yatay kaydırmaya bağlanması ve etkin
+     sekmenin adım geçişlerinde kendiliğinden görünüre gelmesi. Klavye
+     zaten ok tuşlarıyla sekmeler arasında geziniyor.
+     ================================================================== */
+  var lastScrolledTab = -1;
+
+  /** Çubuğun iki ucunda kaydırılacak yer kaldı mı? */
+  function syncTabScroll() {
+    var bar = document.getElementById("tabbar");
+    var rail = document.getElementById("tabbar-rail");
+    if (!bar || !rail) return;
+    /* Kesirli piksellerde son sekme "bir tık" uzakta görünür; bir
+       piksellik pay bunu yutar. */
+    var max = bar.scrollWidth - bar.clientWidth;
+    var tokens = [];
+    if (bar.scrollLeft > 1) tokens.push("prev");
+    if (bar.scrollLeft < max - 1) tokens.push("next");
+    rail.setAttribute("data-overflow", tokens.join(" "));
+  }
+
+  /** Etkin sekmeyi çubukta görünür kılar. */
+  function revealActiveTab() {
+    var bar = document.getElementById("tabbar");
+    if (!bar) return;
+    var btn = bar.children[state.tab];
+    if (!btn) return;
+    /* scrollIntoView sayfayı da kaydırabildiğinden konum elle hesaplanır:
+       sekmeyi çubuğun ortasına yaklaştır, uçlarda taşmayı kırp. */
+    var target = btn.offsetLeft - (bar.clientWidth - btn.offsetWidth) / 2;
+    bar.scrollLeft = Math.max(0, Math.min(target, bar.scrollWidth - bar.clientWidth));
+  }
+
+  function initTabScroll() {
+    var bar = document.getElementById("tabbar");
+    var rail = document.getElementById("tabbar-rail");
+    if (!bar || !rail) return;
+
+    [
+      { id: "tabbar-prev", dir: -1, iconName: "chevronLeft", key: "nav.tabsPrev" },
+      { id: "tabbar-next", dir: 1, iconName: "chevronRight", key: "nav.tabsNext" },
+    ].forEach(function (spec) {
+      var btn = document.getElementById(spec.id);
+      if (!btn) return;
+      btn.innerHTML = "";
+      btn.appendChild(icon(spec.iconName));
+      btn.setAttribute("title", t(spec.key));
+      btn.addEventListener("click", function () {
+        // Bir tam ekran değil, çoğunu kaydır: kenardaki sekme bağlam kalsın.
+        bar.scrollLeft += spec.dir * bar.clientWidth * 0.8;
+      });
+    });
+
+    bar.addEventListener("scroll", syncTabScroll, { passive: true });
+
+    /* Dikey tekerleği yatay kaydırmaya çevir. Yatay tekerleği olan fareler
+       ve izleme yüzeyleri kendi eksenlerinde çalışmayı sürdürür. */
+    bar.addEventListener(
+      "wheel",
+      function (e) {
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        if (bar.scrollWidth <= bar.clientWidth) return;
+        e.preventDefault();
+        bar.scrollLeft += e.deltaY;
+      },
+      { passive: false }
+    );
+
+    window.addEventListener("resize", syncTabScroll);
+    syncTabScroll();
   }
 
   /* ==================================================================

@@ -271,7 +271,8 @@ değişmez.
 | **Yarıda bırak, sonra devam et** | Her değişiklik `localStorage`'a otomatik kaydedilir; kaldığınız sekme ve adım da saklanır. JSON olarak dışa/içe aktarılabilir. |
 | **Koşullu zorunluluk** | `requiredIf` / `requiredUnless` ile bir alanın zorunluluğu başka bir alanın değerine bağlanır. Uyum düzeyi değiştikçe zorunlu alan toplamı kendiliğinden değişir. |
 | **Doğrulama** | Alan bazlı kurallar, adım geçişinde engelleme, sekme/adım üzerinde tamamlanma ve hata rozetleri. Metin alanlarında kural **alandan çıkılınca** uygulanır — yarım yazılmış değer henüz hata sayılmaz; hata bir kez görüldükten sonra düzeltildiği anda kalkar. |
-| **Erişilebilirlik** | WAI-ARIA sekme/adım örüntüleri, klavye gezinmesi (`Alt+←/→`, sekme çubuğunda ok tuşları), `prefers-reduced-motion`, `forced-colors`, odak halkaları. Uyum düzeyi seçiminde renk tek ayırt edici işaret değildir. |
+| **Sekme çubuğu** | Dokuz ölçüt sekmesi çubuğa aynı anda sığmaz. Dokunmatikte parmakla kaydırılır; farede iki uçtaki ok düğmeleri, tekerleğin yatay kaydırmaya bağlanması ve etkin sekmenin adım geçişlerinde kendiliğinden görünüre gelmesi devreye girer. Oklar yalnızca o yönde gidilecek yer varken belirir ve dokunmatikte hiç çizilmez. Çubukta ölçütün kısa adı durur; resmî tam ad sekmenin ipucunda, adım başlığında, kenar çubuğunda ve önizlemede okunmayı sürdürür. |
+| **Erişilebilirlik** | WAI-ARIA sekme/adım örüntüleri, klavye gezinmesi (`Alt+←/→`, sekme çubuğunda ok tuşları), `prefers-reduced-motion`, `forced-colors`, odak halkaları. Uyum düzeyi seçiminde renk tek ayırt edici işaret değildir. Kaydırma okları odak sırasına girmez: klavye zaten sekmeler arasında ok tuşlarıyla geziniyor. |
 | **Görsel dil** | Liquid glass yüzeyler, imleci izleyen parlama, aurora arka plan, mikro animasyonlar. Açık/koyu tema. |
 | **Baskı** | Rapor tarayıcının **Yazdır → PDF olarak kaydet** akışıyla üretilir; ekran kromu basılmaz, ölçüt blokları sayfa ortasından bölünmez. |
 
@@ -315,7 +316,10 @@ tools/
 ### Ölçüt kümesi
 
 `assets/data/sar-criteria.js` ölçütlerin tek kaynağıdır. Ölçüt sekmeleri ve
-alt ölçüt adımları elle yazılmaz; şema (`schema.js`) bu dosyadan üretir. Bir
+alt ölçüt adımları elle yazılmaz; şema (`schema.js`) bu dosyadan üretir.
+
+Her ana ölçüt, resmî `title` alanının yanında bir de `shortTitle` taşır; sekme
+çubuğunda bu kısa ad görünür, tam ad ipucunda ve adım başlığında kalır. Bir
 alt ölçüt eklemek için tek yapılacak, ilgili ana ölçütün `subs` dizisine bir
 kayıt yazmaktır:
 
