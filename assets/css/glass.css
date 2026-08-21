@@ -288,36 +288,6 @@
   pointer-events: none;
 }
 
-/* Adım göstergesi / Step marker */
-.step-item {
-  transition: background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
-}
-
-.step-item:hover {
-  transform: translateX(3px);
-}
-
-.step-item__marker {
-  transition: transform var(--duration-base) var(--ease-out),
-    background-color var(--duration-base) var(--ease-out),
-    border-color var(--duration-base) var(--ease-out);
-}
-
-.step-item:hover .step-item__marker {
-  transform: scale(1.1);
-}
-
-.step-item--complete .step-item__marker svg {
-  animation: check-draw var(--duration-slow) var(--ease-out);
-}
-
-@keyframes check-draw {
-  from { transform: scale(0) rotate(-30deg); opacity: 0; }
-  to   { transform: scale(1) rotate(0); opacity: 1; }
-}
-
 /* Rozet nabzı / Badge pulse on change */
 .badge--pulse {
   animation: badge-pulse var(--duration-slow) var(--ease-out);
@@ -492,7 +462,6 @@
   .lift:hover,
   .btn:hover,
   .choice:hover,
-  .step-item:hover,
   .criterion:hover {
     transform: none;
   }

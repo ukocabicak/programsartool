@@ -11,7 +11,6 @@ window.I18N = (function () {
   var STRINGS = {
     tr: {
       "app.title": "Program Öz Değerlendirme Raporu Sistemi",
-      "app.subtitle": "Program Öz Değerlendirme Sistemi",
 
       "header.noInstitution": "Kurum tanımlanmadı",
       "header.noProgramme": "Program tanımlanmadı",
@@ -28,25 +27,12 @@ window.I18N = (function () {
       "save.at": "Son kayıt",
 
       "nav.steps": "Adımlar",
-      "nav.sections": "Bölümler",
       "nav.progress": "Tamamlanma",
       "nav.next": "Sonraki adım",
       "nav.prev": "Önceki adım",
       "nav.tabsPrev": "Önceki bölümleri göster",
       "nav.tabsNext": "Sonraki bölümleri göster",
       "nav.submit": "Raporu Tamamla",
-
-      "summary.title": "Rapor Özeti",
-      "summary.programme": "Program",
-      "summary.institution": "Kurum",
-      "summary.level": "Düzey",
-      "summary.completed": "Tamamlanan",
-      "summary.evidence": "Kanıt",
-      "summary.evidenceLoose": "{n} tasnif dışı",
-      "summary.evidenceLooseHint":
-        "Hiçbir alt ölçüte bağlanmamış kanıtlar. Koleksiyonda dururlar ama alt ölçüt adımlarına girmezler.",
-      "summary.missing": "Eksik",
-      "summary.compliance": "Uyum",
 
       "field.required": "zorunlu",
       "field.optional": "isteğe bağlı",
@@ -223,14 +209,12 @@ window.I18N = (function () {
 
       /* -------- Erişilebilirlik / a11y -------- */
       "a11y.tabs": "Rapor bölümleri",
-      "a11y.steps": "Bölüm adımları",
       "a11y.skip": "Ana içeriğe geç",
       "a11y.remove": "Kaldır",
     },
 
     en: {
       "app.title": "Programme Self-Assessment Report System",
-      "app.subtitle": "Programme Self-Assessment System",
 
       "header.noInstitution": "No institution defined",
       "header.noProgramme": "No programme defined",
@@ -247,25 +231,12 @@ window.I18N = (function () {
       "save.at": "Last saved",
 
       "nav.steps": "Steps",
-      "nav.sections": "Sections",
       "nav.progress": "Completion",
       "nav.next": "Next step",
       "nav.prev": "Previous step",
       "nav.tabsPrev": "Show previous sections",
       "nav.tabsNext": "Show next sections",
       "nav.submit": "Complete Report",
-
-      "summary.title": "Report Summary",
-      "summary.programme": "Programme",
-      "summary.institution": "Institution",
-      "summary.level": "Level",
-      "summary.completed": "Completed",
-      "summary.evidence": "Evidence",
-      "summary.evidenceLoose": "{n} unclassified",
-      "summary.evidenceLooseHint":
-        "Evidence not linked to any sub-criterion. It stays in the library but does not reach the sub-criterion steps.",
-      "summary.missing": "Missing",
-      "summary.compliance": "Compliance",
 
       "field.required": "required",
       "field.optional": "optional",
@@ -433,7 +404,6 @@ window.I18N = (function () {
       "toast.stepBlocked": "Complete the missing items in this step before continuing.",
 
       "a11y.tabs": "Report sections",
-      "a11y.steps": "Section steps",
       "a11y.skip": "Skip to main content",
       "a11y.remove": "Remove",
     },

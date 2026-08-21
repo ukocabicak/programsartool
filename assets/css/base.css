@@ -181,8 +181,7 @@ legend {
    -------------------------------------------------------------------------- */
 @media (forced-colors: active) {
   .btn,
-  .tab,
-  .step-item {
+  .tab {
     border: 1px solid currentColor;
   }
 }
@@ -229,7 +228,6 @@ legend {
    -------------------------------------------------------------------------- */
 @media print {
   .app-header,
-  .app-sidebar,
   .tabbar,
   .step-actions,
   .no-print {

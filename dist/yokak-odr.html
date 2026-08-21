@@ -480,8 +480,7 @@ legend {
    -------------------------------------------------------------------------- */
 @media (forced-colors: active) {
   .btn,
-  .tab,
-  .step-item {
+  .tab {
     border: 1px solid currentColor;
   }
 }
@@ -528,7 +527,6 @@ legend {
    -------------------------------------------------------------------------- */
 @media print {
   .app-header,
-  .app-sidebar,
   .tabbar,
   .step-actions,
   .no-print {
@@ -987,117 +985,6 @@ legend {
 .tab--error .tab__index {
   background: var(--color-danger-bg);
   color: var(--color-danger-text);
-}
-
-/* --------------------------------------------------------------------------
-   Adım göstergesi / Stepper (dikey, kenar çubuğu)
-   -------------------------------------------------------------------------- */
-.stepper {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.step-item {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  width: 100%;
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  text-align: left;
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  transition: background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
-}
-
-.step-item:hover {
-  background: var(--color-surface-sunken);
-  color: var(--color-text);
-}
-
-.step-item[aria-current="step"] {
-  background: var(--color-brand-subtle);
-  color: var(--color-brand);
-  font-weight: var(--weight-semibold);
-}
-
-:root[data-theme="dark"] .step-item[aria-current="step"] {
-  color: var(--color-text);
-}
-
-.step-item__marker {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  flex: none;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid var(--color-border-strong);
-  background: var(--color-surface);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-semibold);
-  font-variant-numeric: tabular-nums;
-  color: var(--color-text-subtle);
-}
-
-.step-item[aria-current="step"] .step-item__marker {
-  border-color: var(--color-brand);
-  background: var(--color-brand);
-  color: var(--color-text-on-brand);
-}
-
-.step-item--complete .step-item__marker {
-  border-color: var(--color-success);
-  background: var(--color-success);
-  color: #fff;
-}
-
-.step-item--error .step-item__marker {
-  border-color: var(--color-danger);
-  background: var(--color-danger);
-  color: #fff;
-}
-
-.step-item__marker svg {
-  width: 13px;
-  height: 13px;
-  stroke-width: 3;
-}
-
-.step-item__body {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.step-item__title {
-  line-height: var(--leading-snug);
-}
-
-.step-item__meta {
-  font-size: var(--text-xs);
-  color: var(--color-text-subtle);
-  font-weight: var(--weight-regular);
-}
-
-/* Adım bağlantı çizgisi / Connector line */
-.stepper .step-item:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  left: calc(var(--space-3) + 12px);
-  top: calc(var(--space-3) + 26px);
-  width: 1.5px;
-  height: calc(100% - 22px);
-  background: var(--color-border);
-}
-
-.stepper .step-item--complete:not(:last-child)::after {
-  background: var(--color-success);
 }
 
 /* --------------------------------------------------------------------------
@@ -2437,36 +2324,6 @@ legend {
   pointer-events: none;
 }
 
-/* Adım göstergesi / Step marker */
-.step-item {
-  transition: background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
-}
-
-.step-item:hover {
-  transform: translateX(3px);
-}
-
-.step-item__marker {
-  transition: transform var(--duration-base) var(--ease-out),
-    background-color var(--duration-base) var(--ease-out),
-    border-color var(--duration-base) var(--ease-out);
-}
-
-.step-item:hover .step-item__marker {
-  transform: scale(1.1);
-}
-
-.step-item--complete .step-item__marker svg {
-  animation: check-draw var(--duration-slow) var(--ease-out);
-}
-
-@keyframes check-draw {
-  from { transform: scale(0) rotate(-30deg); opacity: 0; }
-  to   { transform: scale(1) rotate(0); opacity: 1; }
-}
-
 /* Rozet nabzı / Badge pulse on change */
 .badge--pulse {
   animation: badge-pulse var(--duration-slow) var(--ease-out);
@@ -2641,7 +2498,6 @@ legend {
   .lift:hover,
   .btn:hover,
   .choice:hover,
-  .step-item:hover,
   .criterion:hover {
     transform: none;
   }
@@ -2677,49 +2533,6 @@ legend {
   padding: 0 var(--space-6);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  text-decoration: none;
-  color: inherit;
-  flex: none;
-}
-
-.brand__mark {
-  height: 34px;
-  width: auto;
-  flex: none;
-}
-
-.brand__text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-}
-
-.brand__name {
-  font-size: var(--text-md);
-  font-weight: var(--weight-bold);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text);
-}
-
-.brand__sub {
-  font-size: var(--text-2xs);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  font-weight: var(--weight-medium);
-}
-
-.app-header__divider {
-  width: 1px;
-  height: 28px;
-  background: var(--color-border);
-  flex: none;
 }
 
 .app-header__context {
@@ -2794,150 +2607,9 @@ legend {
    Gövde / Body grid
    -------------------------------------------------------------------------- */
 .app-body {
-  display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  display: flex;
   flex: 1;
   align-items: start;
-}
-
-/* --------------------------------------------------------------------------
-   Kenar çubuğu / Sidebar
-   -------------------------------------------------------------------------- */
-.app-sidebar {
-  position: sticky;
-  top: var(--header-height);
-  height: calc(100vh - var(--header-height));
-  overflow-y: auto;
-  padding: var(--space-6) var(--space-4);
-  background: var(--color-surface);
-  border-right: 1px solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.sidebar-section__title {
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  color: var(--color-text-subtle);
-  margin-bottom: var(--space-3);
-  padding: 0 var(--space-3);
-}
-
-.sidebar-summary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--color-surface-sunken);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-}
-
-.sidebar-summary__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--space-3);
-  font-size: var(--text-xs);
-}
-
-.sidebar-summary__label {
-  color: var(--color-text-muted);
-  flex: none;
-}
-
-.sidebar-summary__value {
-  font-weight: var(--weight-semibold);
-  font-variant-numeric: tabular-nums;
-  color: var(--color-text);
-  /* Program ve kurum adları uzundur; etiketin sağında kesilmek yerine
-     kendi içinde satır kırar. */
-  min-width: 0;
-  text-align: end;
-  overflow-wrap: anywhere;
-}
-
-/* Sayının yanındaki uyarı notu — ör. tasnif dışı kanıt sayısı */
-.sidebar-summary__note {
-  margin-left: var(--space-2);
-  padding: 1px var(--space-2);
-  border-radius: var(--radius-pill);
-  background: var(--color-warning-bg);
-  color: var(--color-warning-text);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  white-space: nowrap;
-  cursor: help;
-}
-
-/* --------------------------------------------------------------------------
-   Bölüm ağacı / Section tree
-   Sekme çubuğunun (tabbar) tüm içeriğini kenar çubuğunda katlanabilir bir
-   ağaç olarak tekrarlar: her sekme bir dal, adımları yapraklardır.
-   -------------------------------------------------------------------------- */
-.tree {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.tree-group__head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  list-style: none;
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  transition: background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
-}
-
-.tree-group__head::-webkit-details-marker {
-  display: none;
-}
-
-.tree-group__head:hover {
-  background: var(--color-surface-sunken);
-  color: var(--color-text);
-}
-
-.tree-group__chevron {
-  width: 14px;
-  height: 14px;
-  flex: none;
-  color: var(--color-text-subtle);
-  transition: transform var(--duration-fast) var(--ease-out);
-}
-
-.tree-group[open] > .tree-group__head .tree-group__chevron {
-  transform: rotate(90deg);
-}
-
-.tree-group__label {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tree-group--active > .tree-group__head {
-  color: var(--color-brand);
-  font-weight: var(--weight-semibold);
-}
-
-:root[data-theme="dark"] .tree-group--active > .tree-group__head {
-  color: var(--color-accent);
-}
-
-.tree-group__steps {
-  padding: var(--space-1) 0 var(--space-2) var(--space-5);
 }
 
 /* --------------------------------------------------------------------------
@@ -2945,6 +2617,7 @@ legend {
    -------------------------------------------------------------------------- */
 .app-main {
   min-width: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -3191,31 +2864,10 @@ legend {
 /* --------------------------------------------------------------------------
    Duyarlı / Responsive
    -------------------------------------------------------------------------- */
-@media (max-width: 1100px) {
-  .app-body {
-    grid-template-columns: 1fr;
-  }
-
-  .app-sidebar {
-    position: static;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .tabbar-wrap {
-    position: static;
-  }
-}
-
 @media (max-width: 720px) {
   .app-header {
     padding: 0 var(--space-4);
     gap: var(--space-3);
-  }
-
-  .brand__sub {
-    display: none;
   }
 
   .tabbar {
@@ -3246,12 +2898,10 @@ legend {
 
 /* Üst bar sabit yükseklikte olduğundan satırı kaydıramaz; eylemleri de
    sabit genişliktedir. Bu yüzden dar ekranda kademe kademe sadeleşir:
-   önce bağlam yazısı, sonra düğme etiketleri, sonra marka yazısı, en
-   sonda kayıt göstergesi düşer. Her kademe kendi eşiğinde devreye girer;
-   düşen her öğenin bilgisi ya kenar çubuğunda ya da düğmenin title'ında
-   durmayı sürdürür. */
+   önce bağlam yazısı, sonra düğme etiketleri, en sonda kayıt göstergesi
+   düşer. Her kademe kendi eşiğinde devreye girer; düşen her öğenin
+   bilgisi düğmenin title'ında okunmayı sürdürür. */
 @media (max-width: 980px) {
-  .app-header__divider,
   .app-header__context {
     display: none;
   }
@@ -3268,10 +2918,6 @@ legend {
   .app-header {
     padding: 0 var(--space-3);
     gap: var(--space-2);
-  }
-
-  .brand__text {
-    display: none;
   }
 
   .app-header__actions {
@@ -4487,23 +4133,6 @@ legend {
     <div class="app">
       <!-- ============================ ÜST BAR ============================ -->
       <header class="app-header glass">
-        <a class="brand" href="#" onclick="return false">
-          <img
-            class="brand__mark"
-            src="data:image/png;base64,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"
-            width="303"
-            height="176"
-            alt=""
-            aria-hidden="true"
-          />
-          <span class="brand__text">
-            <span class="brand__name">YÖKAK</span>
-            <span class="brand__sub" id="brand-sub">Program Öz Değerlendirme Sistemi</span>
-          </span>
-        </a>
-
-        <span class="app-header__divider" aria-hidden="true"></span>
-
         <span class="app-header__context">
           <span class="app-header__context-label" id="ctx-institution"></span>
           <span class="app-header__context-value" id="ctx-programme"></span>
@@ -4516,8 +4145,6 @@ legend {
 
       <!-- ============================ GÖVDE ============================= -->
       <div class="app-body">
-        <aside class="app-sidebar" id="sidebar"></aside>
-
         <main class="app-main">
           <div class="tabbar-wrap">
             <!-- Kaydırma okları yalnızca fare içindir: klavye zaten sekme
@@ -4571,7 +4198,6 @@ window.I18N = (function () {
   var STRINGS = {
     tr: {
       "app.title": "Program Öz Değerlendirme Raporu Sistemi",
-      "app.subtitle": "Program Öz Değerlendirme Sistemi",
 
       "header.noInstitution": "Kurum tanımlanmadı",
       "header.noProgramme": "Program tanımlanmadı",
@@ -4588,25 +4214,12 @@ window.I18N = (function () {
       "save.at": "Son kayıt",
 
       "nav.steps": "Adımlar",
-      "nav.sections": "Bölümler",
       "nav.progress": "Tamamlanma",
       "nav.next": "Sonraki adım",
       "nav.prev": "Önceki adım",
       "nav.tabsPrev": "Önceki bölümleri göster",
       "nav.tabsNext": "Sonraki bölümleri göster",
       "nav.submit": "Raporu Tamamla",
-
-      "summary.title": "Rapor Özeti",
-      "summary.programme": "Program",
-      "summary.institution": "Kurum",
-      "summary.level": "Düzey",
-      "summary.completed": "Tamamlanan",
-      "summary.evidence": "Kanıt",
-      "summary.evidenceLoose": "{n} tasnif dışı",
-      "summary.evidenceLooseHint":
-        "Hiçbir alt ölçüte bağlanmamış kanıtlar. Koleksiyonda dururlar ama alt ölçüt adımlarına girmezler.",
-      "summary.missing": "Eksik",
-      "summary.compliance": "Uyum",
 
       "field.required": "zorunlu",
       "field.optional": "isteğe bağlı",
@@ -4783,14 +4396,12 @@ window.I18N = (function () {
 
       /* -------- Erişilebilirlik / a11y -------- */
       "a11y.tabs": "Rapor bölümleri",
-      "a11y.steps": "Bölüm adımları",
       "a11y.skip": "Ana içeriğe geç",
       "a11y.remove": "Kaldır",
     },
 
     en: {
       "app.title": "Programme Self-Assessment Report System",
-      "app.subtitle": "Programme Self-Assessment System",
 
       "header.noInstitution": "No institution defined",
       "header.noProgramme": "No programme defined",
@@ -4807,25 +4418,12 @@ window.I18N = (function () {
       "save.at": "Last saved",
 
       "nav.steps": "Steps",
-      "nav.sections": "Sections",
       "nav.progress": "Completion",
       "nav.next": "Next step",
       "nav.prev": "Previous step",
       "nav.tabsPrev": "Show previous sections",
       "nav.tabsNext": "Show next sections",
       "nav.submit": "Complete Report",
-
-      "summary.title": "Report Summary",
-      "summary.programme": "Programme",
-      "summary.institution": "Institution",
-      "summary.level": "Level",
-      "summary.completed": "Completed",
-      "summary.evidence": "Evidence",
-      "summary.evidenceLoose": "{n} unclassified",
-      "summary.evidenceLooseHint":
-        "Evidence not linked to any sub-criterion. It stays in the library but does not reach the sub-criterion steps.",
-      "summary.missing": "Missing",
-      "summary.compliance": "Compliance",
 
       "field.required": "required",
       "field.optional": "optional",
@@ -4993,7 +4591,6 @@ window.I18N = (function () {
       "toast.stepBlocked": "Complete the missing items in this step before continuing.",
 
       "a11y.tabs": "Report sections",
-      "a11y.steps": "Section steps",
       "a11y.skip": "Skip to main content",
       "a11y.remove": "Remove",
     },
@@ -12202,7 +11799,6 @@ window.Fields = (function () {
      ================================================================== */
   function buildHeader() {
     // Sabit başlık metinlerini de dile uydur
-    document.getElementById("brand-sub").textContent = t("app.subtitle");
     var skip = document.querySelector(".skip-link");
     if (skip) skip.textContent = t("a11y.skip");
     document.getElementById("ctx-institution").textContent = institutionLabel();
@@ -12424,11 +12020,6 @@ window.Fields = (function () {
      ================================================================== */
   var lastScrolledTab = -1;
 
-  /** Kenar çubuğundaki ağaçta kullanıcının açık bıraktığı sekmeler
-   *  (tab.id → boolean). Belirtilmeyen sekmeler varsayılan olarak yalnızca
-   *  etkinken açılır. */
-  var treeOpen = {};
-
   /** Çubuğun iki ucunda kaydırılacak yer kaldı mı? */
   function syncTabScroll() {
     var bar = document.getElementById("tabbar");
@@ -12492,195 +12083,6 @@ window.Fields = (function () {
 
     window.addEventListener("resize", syncTabScroll);
     syncTabScroll();
-  }
-
-  /* ==================================================================
-     Kenar çubuğu / sidebar (adımlar + özet)
-     ================================================================== */
-  function buildSidebar() {
-    var host = document.getElementById("sidebar");
-    host.innerHTML = "";
-
-    /* -- bölüm ağacı -- */
-    /* Tabbar'daki tüm sekmeler burada bir ağaç olarak tekrarlanır: her
-       sekme bir dal, altındaki adımlar yapraklardır. Böylece kullanıcı
-       sekme çubuğuna gitmeden raporun tamamında gezinebilir. */
-    var treeSection = el("section", { class: "sidebar-section" }, [
-      el("h2", { class: "sidebar-section__title", text: t("nav.sections") }),
-    ]);
-    var tree = el("nav", { class: "tree", "aria-label": t("a11y.tabs") });
-
-    tabs.forEach(function (grp, ti) {
-      var prog = V.tabProgress(grp, S);
-      var complete = prog.total > 0 && prog.done === prog.total;
-
-      var badge = el("span", { class: "tab__index" });
-      if (complete) badge.appendChild(icon("check"));
-      else badge.textContent = String(ti + 1);
-
-      var summary = el(
-        "summary",
-        { class: "tree-group__head" + (complete ? " tab--complete" : ""), title: pick(grp.label) },
-        [icon("chevronRight", "tree-group__chevron"), badge, el("span", { class: "tree-group__label", text: pick(grp.short || grp.label) })]
-      );
-
-      var stepper = el("nav", { class: "stepper tree-group__steps", "aria-label": pick(grp.label) + " · " + t("nav.steps") });
-      var shown = 0;
-      grp.steps.forEach(function (step, i) {
-        if (!V.isVisible(step, S)) return; // koşulu sağlanmayan adım listelenmez
-        shown++;
-        var st = V.stepState(step, S);
-        var errs = V.stepErrorCount(step, S);
-        var cls = "step-item";
-        if (st === "complete") cls += " step-item--complete";
-        else if (st === "partial") cls += " step-item--error";
-
-        var marker = el("span", { class: "step-item__marker" });
-        if (st === "complete") marker.appendChild(icon("check"));
-        else marker.textContent = String(shown);
-
-        var item = el("button", {
-          type: "button",
-          class: cls,
-          "aria-current": ti === state.tab && i === state.step ? "step" : null,
-        }, [
-          marker,
-          el("span", { class: "step-item__body" }, [
-            el("span", { class: "step-item__title", text: pick(step.short || step.title) }),
-            errs > 0 && st !== "empty"
-              ? el("span", { class: "step-item__meta", text: t("validate.summary", { n: errs }) })
-              : null,
-          ]),
-        ]);
-        item.addEventListener("click", function () {
-          go(ti, i);
-        });
-        stepper.appendChild(item);
-      });
-
-      /* Etkin sekme her zaman açık görünür; öteki sekmelerde kullanıcının
-         daha önce bıraktığı açık/kapalı tercih korunur. */
-      var manual = treeOpen[grp.id];
-      var open = manual === undefined ? ti === state.tab : manual;
-
-      var details = el(
-        "details",
-        { class: "tree-group" + (ti === state.tab ? " tree-group--active" : ""), open: open },
-        [summary, stepper]
-      );
-      /* "toggle" olayı yerine tıklama dinlenir: bazı tarayıcılarda başlangıçta
-         açık kurulan bir <details>, hiç tıklanmadan bir kere "toggle" olayı
-         yayar; bu, dalı kullanıcı hiç dokunmamışken kalıcı olarak açık
-         işaretlerdi. Tıklama anında durum henüz tersine dönmemiştir. */
-      summary.addEventListener("click", function () {
-        treeOpen[grp.id] = !details.open;
-      });
-
-      tree.appendChild(details);
-    });
-
-    treeSection.appendChild(tree);
-    host.appendChild(treeSection);
-
-    /* -- genel ilerleme -- */
-    var p = V.progress(tabs, S);
-    var summary = el("section", { class: "sidebar-section" }, [
-      el("h2", { class: "sidebar-section__title", text: t("summary.title") }),
-      el("div", { class: "sidebar-summary glass" }, [
-        el("div", { class: "progress" }, [
-          el("div", { class: "progress__meta" }, [
-            el("span", { text: t("nav.progress") }),
-            el("strong", { class: "count-roll", text: p.percent + "%" }),
-          ]),
-          el("div", {
-            class: "progress__track",
-            role: "progressbar",
-            "aria-valuenow": String(p.percent),
-            "aria-valuemin": "0",
-            "aria-valuemax": "100",
-            "aria-label": t("nav.progress"),
-          }, [el("div", { class: "progress__fill", style: "width:" + p.percent + "%" })]),
-        ]),
-        row(t("summary.programme"), programmeLabel()),
-        row(t("summary.institution"), S.get("institution.name") || "—"),
-        row(t("summary.level"), levelLabel()),
-        complianceRow(),
-        evidenceRow(),
-        row(t("summary.completed"), p.done + " / " + p.total),
-        row(t("summary.missing"), String(p.missing)),
-      ]),
-    ]);
-    host.appendChild(summary);
-  }
-
-  function row(label, value) {
-    return el("div", { class: "sidebar-summary__row" }, [
-      el("span", { class: "sidebar-summary__label", text: label }),
-      el("span", { class: "sidebar-summary__value", text: value || "—" }),
-    ]);
-  }
-
-  /**
-   * Koleksiyondaki kanıt sayısı. Yalnızca erişilebilir kanıtlar sayılır —
-   * bir alt ölçüt adımının tamamlanmış sayılması için de aynı ölçüt
-   * geçerlidir. Hiçbir alt ölçüte bağlanmamış kanıtlar sayıya girer ama
-   * alt ölçüt adımlarına ulaşmadıkları için ayrıca belirtilir.
-   */
-  function evidenceRow() {
-    var EV = window.Evidence;
-    // Dizinde listelenen her şey sayılır: koleksiyon + form adımlarının
-    // kendi belge alanlarından türeyen kanıtlar.
-    var usable = EV.all().filter(EV.isUsable).concat(EV.externals());
-    var loose = usable.filter(function (it) {
-      return !(it.tags || []).some(function (c) {
-        return c !== EV.OTHER;
-      });
-    }).length;
-
-    var r = row(t("summary.evidence"), String(usable.length));
-    if (loose) {
-      r.querySelector(".sidebar-summary__value").appendChild(
-        el("span", {
-          class: "sidebar-summary__note",
-          text: t("summary.evidenceLoose", { n: loose }),
-          title: t("summary.evidenceLooseHint"),
-        })
-      );
-    }
-    return r;
-  }
-
-  /** Seçilen programın öğretim düzeyi; yoksa TYÇ seviyesinden okunur. */
-  function levelLabel() {
-    var sel = S.get("programme.selected", []);
-    if (Array.isArray(sel) && sel.length === 1) {
-      var rec = window.PROGRAM_DATA.find(sel[0]);
-      if (rec) return pick(window.PROGRAM_DATA.levelName(window.PROGRAM_DATA.levelOf(rec)));
-    }
-    var tyc = S.get("qualification.tyc", "");
-    if (!tyc) return "—";
-    var opt = window.SCHEMA.frameworkLevels.filter(function (o) {
-      return o.value === tyc;
-    })[0];
-    return opt ? pick(opt.label) : tyc;
-  }
-
-  /**
-   * 57 alt ölçütün uyum oranı ve kaçının değerlendirildiği. Oran, uyum
-   * ölçeğinin puanlarından hesaplanır; "Uygulanamaz" işaretlenenler paya
-   * da paydaya da girmez.
-   */
-  function complianceRow() {
-    var c = V.compliance(S);
-    var r = row(t("summary.compliance"), c.scored ? c.percent + "%" : "—");
-    r.querySelector(".sidebar-summary__value").appendChild(
-      el("span", {
-        class: "sidebar-summary__note",
-        text: c.assessed + " / " + c.total,
-        title: t("compliance.rateHint"),
-      })
-    );
-    return r;
   }
 
   /* ==================================================================
@@ -12797,7 +12199,6 @@ window.Fields = (function () {
     if (ctxInstitution) ctxInstitution.textContent = institutionLabel();
     var ctxProgramme = document.getElementById("ctx-programme");
     if (ctxProgramme) ctxProgramme.textContent = programmeLabel();
-    buildSidebar();
     buildTopProgress();
     buildTabs();
   }
@@ -13183,8 +12584,6 @@ window.Fields = (function () {
       want = after.length ? after[0] : vis[vis.length - 1];
     }
     state.step = want;
-    // Gidilen sekme ağaçta her zaman görünür açılır, daha önce kapatılmış olsa bile.
-    treeOpen[tabs[state.tab].id] = true;
     render();
   }
 

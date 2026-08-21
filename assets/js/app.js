@@ -80,7 +80,6 @@
      ================================================================== */
   function buildHeader() {
     // Sabit başlık metinlerini de dile uydur
-    document.getElementById("brand-sub").textContent = t("app.subtitle");
     var skip = document.querySelector(".skip-link");
     if (skip) skip.textContent = t("a11y.skip");
     document.getElementById("ctx-institution").textContent = institutionLabel();
@@ -302,11 +301,6 @@
      ================================================================== */
   var lastScrolledTab = -1;
 
-  /** Kenar çubuğundaki ağaçta kullanıcının açık bıraktığı sekmeler
-   *  (tab.id → boolean). Belirtilmeyen sekmeler varsayılan olarak yalnızca
-   *  etkinken açılır. */
-  var treeOpen = {};
-
   /** Çubuğun iki ucunda kaydırılacak yer kaldı mı? */
   function syncTabScroll() {
     var bar = document.getElementById("tabbar");
@@ -370,195 +364,6 @@
 
     window.addEventListener("resize", syncTabScroll);
     syncTabScroll();
-  }
-
-  /* ==================================================================
-     Kenar çubuğu / sidebar (adımlar + özet)
-     ================================================================== */
-  function buildSidebar() {
-    var host = document.getElementById("sidebar");
-    host.innerHTML = "";
-
-    /* -- bölüm ağacı -- */
-    /* Tabbar'daki tüm sekmeler burada bir ağaç olarak tekrarlanır: her
-       sekme bir dal, altındaki adımlar yapraklardır. Böylece kullanıcı
-       sekme çubuğuna gitmeden raporun tamamında gezinebilir. */
-    var treeSection = el("section", { class: "sidebar-section" }, [
-      el("h2", { class: "sidebar-section__title", text: t("nav.sections") }),
-    ]);
-    var tree = el("nav", { class: "tree", "aria-label": t("a11y.tabs") });
-
-    tabs.forEach(function (grp, ti) {
-      var prog = V.tabProgress(grp, S);
-      var complete = prog.total > 0 && prog.done === prog.total;
-
-      var badge = el("span", { class: "tab__index" });
-      if (complete) badge.appendChild(icon("check"));
-      else badge.textContent = String(ti + 1);
-
-      var summary = el(
-        "summary",
-        { class: "tree-group__head" + (complete ? " tab--complete" : ""), title: pick(grp.label) },
-        [icon("chevronRight", "tree-group__chevron"), badge, el("span", { class: "tree-group__label", text: pick(grp.short || grp.label) })]
-      );
-
-      var stepper = el("nav", { class: "stepper tree-group__steps", "aria-label": pick(grp.label) + " · " + t("nav.steps") });
-      var shown = 0;
-      grp.steps.forEach(function (step, i) {
-        if (!V.isVisible(step, S)) return; // koşulu sağlanmayan adım listelenmez
-        shown++;
-        var st = V.stepState(step, S);
-        var errs = V.stepErrorCount(step, S);
-        var cls = "step-item";
-        if (st === "complete") cls += " step-item--complete";
-        else if (st === "partial") cls += " step-item--error";
-
-        var marker = el("span", { class: "step-item__marker" });
-        if (st === "complete") marker.appendChild(icon("check"));
-        else marker.textContent = String(shown);
-
-        var item = el("button", {
-          type: "button",
-          class: cls,
-          "aria-current": ti === state.tab && i === state.step ? "step" : null,
-        }, [
-          marker,
-          el("span", { class: "step-item__body" }, [
-            el("span", { class: "step-item__title", text: pick(step.short || step.title) }),
-            errs > 0 && st !== "empty"
-              ? el("span", { class: "step-item__meta", text: t("validate.summary", { n: errs }) })
-              : null,
-          ]),
-        ]);
-        item.addEventListener("click", function () {
-          go(ti, i);
-        });
-        stepper.appendChild(item);
-      });
-
-      /* Etkin sekme her zaman açık görünür; öteki sekmelerde kullanıcının
-         daha önce bıraktığı açık/kapalı tercih korunur. */
-      var manual = treeOpen[grp.id];
-      var open = manual === undefined ? ti === state.tab : manual;
-
-      var details = el(
-        "details",
-        { class: "tree-group" + (ti === state.tab ? " tree-group--active" : ""), open: open },
-        [summary, stepper]
-      );
-      /* "toggle" olayı yerine tıklama dinlenir: bazı tarayıcılarda başlangıçta
-         açık kurulan bir <details>, hiç tıklanmadan bir kere "toggle" olayı
-         yayar; bu, dalı kullanıcı hiç dokunmamışken kalıcı olarak açık
-         işaretlerdi. Tıklama anında durum henüz tersine dönmemiştir. */
-      summary.addEventListener("click", function () {
-        treeOpen[grp.id] = !details.open;
-      });
-
-      tree.appendChild(details);
-    });
-
-    treeSection.appendChild(tree);
-    host.appendChild(treeSection);
-
-    /* -- genel ilerleme -- */
-    var p = V.progress(tabs, S);
-    var summary = el("section", { class: "sidebar-section" }, [
-      el("h2", { class: "sidebar-section__title", text: t("summary.title") }),
-      el("div", { class: "sidebar-summary glass" }, [
-        el("div", { class: "progress" }, [
-          el("div", { class: "progress__meta" }, [
-            el("span", { text: t("nav.progress") }),
-            el("strong", { class: "count-roll", text: p.percent + "%" }),
-          ]),
-          el("div", {
-            class: "progress__track",
-            role: "progressbar",
-            "aria-valuenow": String(p.percent),
-            "aria-valuemin": "0",
-            "aria-valuemax": "100",
-            "aria-label": t("nav.progress"),
-          }, [el("div", { class: "progress__fill", style: "width:" + p.percent + "%" })]),
-        ]),
-        row(t("summary.programme"), programmeLabel()),
-        row(t("summary.institution"), S.get("institution.name") || "—"),
-        row(t("summary.level"), levelLabel()),
-        complianceRow(),
-        evidenceRow(),
-        row(t("summary.completed"), p.done + " / " + p.total),
-        row(t("summary.missing"), String(p.missing)),
-      ]),
-    ]);
-    host.appendChild(summary);
-  }
-
-  function row(label, value) {
-    return el("div", { class: "sidebar-summary__row" }, [
-      el("span", { class: "sidebar-summary__label", text: label }),
-      el("span", { class: "sidebar-summary__value", text: value || "—" }),
-    ]);
-  }
-
-  /**
-   * Koleksiyondaki kanıt sayısı. Yalnızca erişilebilir kanıtlar sayılır —
-   * bir alt ölçüt adımının tamamlanmış sayılması için de aynı ölçüt
-   * geçerlidir. Hiçbir alt ölçüte bağlanmamış kanıtlar sayıya girer ama
-   * alt ölçüt adımlarına ulaşmadıkları için ayrıca belirtilir.
-   */
-  function evidenceRow() {
-    var EV = window.Evidence;
-    // Dizinde listelenen her şey sayılır: koleksiyon + form adımlarının
-    // kendi belge alanlarından türeyen kanıtlar.
-    var usable = EV.all().filter(EV.isUsable).concat(EV.externals());
-    var loose = usable.filter(function (it) {
-      return !(it.tags || []).some(function (c) {
-        return c !== EV.OTHER;
-      });
-    }).length;
-
-    var r = row(t("summary.evidence"), String(usable.length));
-    if (loose) {
-      r.querySelector(".sidebar-summary__value").appendChild(
-        el("span", {
-          class: "sidebar-summary__note",
-          text: t("summary.evidenceLoose", { n: loose }),
-          title: t("summary.evidenceLooseHint"),
-        })
-      );
-    }
-    return r;
-  }
-
-  /** Seçilen programın öğretim düzeyi; yoksa TYÇ seviyesinden okunur. */
-  function levelLabel() {
-    var sel = S.get("programme.selected", []);
-    if (Array.isArray(sel) && sel.length === 1) {
-      var rec = window.PROGRAM_DATA.find(sel[0]);
-      if (rec) return pick(window.PROGRAM_DATA.levelName(window.PROGRAM_DATA.levelOf(rec)));
-    }
-    var tyc = S.get("qualification.tyc", "");
-    if (!tyc) return "—";
-    var opt = window.SCHEMA.frameworkLevels.filter(function (o) {
-      return o.value === tyc;
-    })[0];
-    return opt ? pick(opt.label) : tyc;
-  }
-
-  /**
-   * 57 alt ölçütün uyum oranı ve kaçının değerlendirildiği. Oran, uyum
-   * ölçeğinin puanlarından hesaplanır; "Uygulanamaz" işaretlenenler paya
-   * da paydaya da girmez.
-   */
-  function complianceRow() {
-    var c = V.compliance(S);
-    var r = row(t("summary.compliance"), c.scored ? c.percent + "%" : "—");
-    r.querySelector(".sidebar-summary__value").appendChild(
-      el("span", {
-        class: "sidebar-summary__note",
-        text: c.assessed + " / " + c.total,
-        title: t("compliance.rateHint"),
-      })
-    );
-    return r;
   }
 
   /* ==================================================================
@@ -675,7 +480,6 @@
     if (ctxInstitution) ctxInstitution.textContent = institutionLabel();
     var ctxProgramme = document.getElementById("ctx-programme");
     if (ctxProgramme) ctxProgramme.textContent = programmeLabel();
-    buildSidebar();
     buildTopProgress();
     buildTabs();
   }
@@ -1061,8 +865,6 @@
       want = after.length ? after[0] : vis[vis.length - 1];
     }
     state.step = want;
-    // Gidilen sekme ağaçta her zaman görünür açılır, daha önce kapatılmış olsa bile.
-    treeOpen[tabs[state.tab].id] = true;
     render();
   }
 
