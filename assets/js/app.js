@@ -64,121 +64,14 @@
       refreshChrome();
     });
 
-    buildHeader();
+    document.title = "YÖKAK · " + t("app.title");
+    var skip = document.querySelector(".skip-link");
+    if (skip) skip.textContent = t("a11y.skip");
+
     initTabScroll();
     buildTabs();
     render();
     bindKeys();
-
-    S.onChange(function () {
-      updateSaveState();
-    });
-  }
-
-  /* ==================================================================
-     Üst bar / header
-     ================================================================== */
-  function buildHeader() {
-    // Sabit başlık metinlerini de dile uydur
-    var skip = document.querySelector(".skip-link");
-    if (skip) skip.textContent = t("a11y.skip");
-    document.getElementById("ctx-institution").textContent = institutionLabel();
-    document.getElementById("ctx-programme").textContent = programmeLabel();
-    document.title = "YÖKAK · " + t("app.title");
-
-    var host = document.getElementById("header-actions");
-    host.innerHTML = "";
-
-    // Kayıt durumu
-    var save = el("div", { class: "save-state", id: "save-state" }, [
-      el("span", { class: "save-state__dot" }),
-      el("span", { id: "save-state-text" }),
-    ]);
-    host.appendChild(save);
-
-    // Dil değiştirici
-    var langBox = el("div", { class: "segmented", role: "group", "aria-label": t("header.lang") });
-    ["tr", "en"].forEach(function (code) {
-      var b = el("button", {
-        type: "button",
-        class: "segmented__btn",
-        "aria-pressed": window.I18N.lang === code ? "true" : "false",
-        text: code.toUpperCase(),
-      });
-      b.addEventListener("click", function () {
-        window.I18N.set(code);
-        S.setPref("lang", code);
-        buildHeader();
-        buildTabs();
-        render();
-      });
-      langBox.appendChild(b);
-    });
-    host.appendChild(langBox);
-
-    // Tema
-    var isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    var themeBtn = el("button", {
-      type: "button",
-      class: "btn btn--ghost btn--icon",
-      title: isDark ? t("header.themeLight") : t("header.themeDark"),
-      "aria-label": isDark ? t("header.themeLight") : t("header.themeDark"),
-    }, [icon(isDark ? "sun" : "moon", "btn__icon")]);
-    themeBtn.addEventListener("click", function () {
-      var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      S.setPref("theme", next);
-      buildHeader();
-    });
-    host.appendChild(themeBtn);
-
-    // Dışa aktar
-    var exportBtn = el("button", { type: "button", class: "btn btn--secondary btn--sm", title: t("header.export") }, [
-      icon("download", "btn__icon"),
-      el("span", { class: "btn-label", text: t("header.export") }),
-    ]);
-    exportBtn.addEventListener("click", function () {
-      afterDownload(S.download(), "toast.exported");
-    });
-    host.appendChild(exportBtn);
-
-    // İçe aktar
-    var fileInput = el("input", { type: "file", accept: ".json,application/json", class: "sr-only", id: "import-file" });
-    fileInput.addEventListener("change", function () {
-      var file = fileInput.files && fileInput.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function () {
-        try {
-          S.importJSON(String(reader.result));
-          toast(t("toast.imported"), "success");
-          buildTabs();
-          render();
-        } catch (e) {
-          toast(t("toast.importError"), "danger");
-        }
-      };
-      reader.readAsText(file);
-      fileInput.value = "";
-    });
-    var importBtn = el("button", { type: "button", class: "btn btn--secondary btn--sm", title: t("header.import") }, [
-      icon("upload", "btn__icon"),
-      el("span", { class: "btn-label", text: t("header.import") }),
-    ]);
-    importBtn.addEventListener("click", function () {
-      fileInput.click();
-    });
-    host.appendChild(importBtn);
-    host.appendChild(fileInput);
-
-    // Sıfırla
-    var resetBtn = el("button", { type: "button", class: "btn btn--ghost btn--icon", title: t("header.reset"), "aria-label": t("header.reset") }, [
-      icon("reset", "btn__icon"),
-    ]);
-    resetBtn.addEventListener("click", confirmReset);
-    host.appendChild(resetBtn);
-
-    updateSaveState();
   }
 
   /**
@@ -195,39 +88,6 @@
         toast(t(err && err.code === "too_large" ? "toast.exportTooLarge" : "toast.exportFailed"), "danger");
       }
     );
-  }
-
-  /** Üst bardaki bağlam: raporun konusu olan kurum. */
-  function institutionLabel() {
-    var name = S.get("institution.name", "");
-    return name && String(name).trim() ? String(name).trim() : t("header.noInstitution");
-  }
-
-  /** Üst bardaki bağlam: raporun konusu olan program. */
-  function programmeLabel() {
-    var name = S.get("qualification.name", "");
-    if (name && String(name).trim()) return String(name).trim();
-    var sel = S.get("programme.selected", []);
-    if (Array.isArray(sel) && sel.length === 1) {
-      var rec = window.PROGRAM_DATA.find(sel[0]);
-      if (rec) return pick(rec.name);
-    }
-    return t("header.noProgramme");
-  }
-
-  function updateSaveState() {
-    var text = document.getElementById("save-state-text");
-    if (!text) return;
-    /* Store kaydı geciktirdiği sürece kökte data-saving durur; kullanıcı
-       yazarken göstergenin "son kayıt" demesi yanıltıcı olurdu. */
-    if (document.documentElement.hasAttribute("data-saving")) {
-      text.textContent = t("save.saving");
-      return;
-    }
-    var d = S.lastSaved();
-    text.textContent = d
-      ? t("save.at") + " " + d.toLocaleTimeString(window.I18N.lang === "tr" ? "tr-TR" : "en-GB", { hour: "2-digit", minute: "2-digit" })
-      : t("save.never");
   }
 
   /* ==================================================================
@@ -367,34 +227,6 @@
   }
 
   /* ==================================================================
-     Ana ilerleme çubuğu / prominent completion bar
-     ================================================================== */
-  function buildTopProgress() {
-    var host = document.getElementById("topprogress");
-    var p = V.progress(tabs, S);
-    host.innerHTML = "";
-    host.appendChild(
-      el("div", { class: "topbar-progress glass" }, [
-        el("div", { class: "topbar-progress__label" }, [
-          el("span", { class: "topbar-progress__title", text: t("nav.progress") }),
-          el("span", { class: "topbar-progress__stat" }, [
-            el("strong", { class: "count-roll", text: p.percent + "%" }),
-            el("span", { text: " · " + p.done + "/" + p.total }),
-          ]),
-        ]),
-        el("div", {
-          class: "progress__track",
-          role: "progressbar",
-          "aria-valuenow": String(p.percent),
-          "aria-valuemin": "0",
-          "aria-valuemax": "100",
-          "aria-label": t("nav.progress"),
-        }, [el("div", { class: "progress__fill", style: "width:" + p.percent + "%" })]),
-      ])
-    );
-  }
-
-  /* ==================================================================
      Adım görünümü / step view
      ================================================================== */
   /**
@@ -476,11 +308,6 @@
   }
 
   function refreshChrome() {
-    var ctxInstitution = document.getElementById("ctx-institution");
-    if (ctxInstitution) ctxInstitution.textContent = institutionLabel();
-    var ctxProgramme = document.getElementById("ctx-programme");
-    if (ctxProgramme) ctxProgramme.textContent = programmeLabel();
-    buildTopProgress();
     buildTabs();
   }
 
@@ -1058,39 +885,6 @@
             var b = el("button", { type: "button", class: "btn btn--ghost", text: t("done.close") });
             b.addEventListener("click", function () {
               dlg.close();
-            });
-            return b;
-          })(),
-        ]),
-      ])
-    );
-    dlg.showModal();
-  }
-
-  function confirmReset() {
-    var dlg = document.getElementById("confirm-dialog");
-    dlg.innerHTML = "";
-    dlg.appendChild(
-      el("div", {}, [
-        el("div", { class: "modal__header" }, [el("h2", { class: "modal__title", text: t("confirm.resetTitle") })]),
-        el("div", { class: "modal__body" }, [el("p", { text: t("confirm.resetBody") })]),
-        el("div", { class: "modal__footer" }, [
-          (function () {
-            var b = el("button", { type: "button", class: "btn btn--secondary", text: t("confirm.cancel") });
-            b.addEventListener("click", function () {
-              dlg.close();
-            });
-            return b;
-          })(),
-          (function () {
-            var b = el("button", { type: "button", class: "btn btn--danger", text: t("confirm.confirm") });
-            b.addEventListener("click", function () {
-              S.reset();
-              dlg.close();
-              state.tab = 0;
-              state.step = 0;
-              toast(t("toast.reset"), "success");
-              render();
             });
             return b;
           })(),

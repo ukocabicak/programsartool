@@ -227,7 +227,6 @@ legend {
    Yazdırma / Print
    -------------------------------------------------------------------------- */
 @media print {
-  .app-header,
   .tabbar,
   .step-actions,
   .no-print {

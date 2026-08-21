@@ -12,19 +12,7 @@ window.I18N = (function () {
     tr: {
       "app.title": "Program Öz Değerlendirme Raporu Sistemi",
 
-      "header.noInstitution": "Kurum tanımlanmadı",
-      "header.noProgramme": "Program tanımlanmadı",
-      "header.lang": "Dil",
-      "header.themeLight": "Açık tema",
-      "header.themeDark": "Koyu tema",
       "header.save": "Kaydet",
-      "header.export": "Dışa aktar",
-      "header.import": "İçe aktar",
-      "header.reset": "Sıfırla",
-
-      "save.saving": "Kaydediliyor…",
-      "save.never": "Henüz kaydedilmedi",
-      "save.at": "Son kayıt",
 
       "nav.steps": "Adımlar",
       "nav.progress": "Tamamlanma",
@@ -189,22 +177,12 @@ window.I18N = (function () {
       "done.keepNote":
         "Numara bir kez üretilir ve raporla birlikte saklanır; bu ekranı yeniden açsanız da değişmez.",
 
-      /* -------- Onay penceresi / confirm -------- */
-      "confirm.confirm": "Onayla",
-      "confirm.cancel": "Vazgeç",
-      "confirm.resetTitle": "Raporu sıfırla",
-      "confirm.resetBody":
-        "Girilen tüm veriler ve kanıtlar silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
-
       /* -------- Bildirimler / toasts -------- */
       "toast.saved": "Kaydedildi.",
       "toast.exported": "Rapor dışa aktarıldı.",
       "toast.exportFailed": "Rapor kaydedilemedi.",
       "toast.exportTooLarge":
         "Rapor kaydedilemeyecek kadar büyük. Büyük kanıt dosyalarını dosya yerine bağlantı olarak veriniz.",
-      "toast.imported": "Rapor içe aktarıldı.",
-      "toast.importError": "Dosya okunamadı. Geçerli bir rapor dosyası seçiniz.",
-      "toast.reset": "Rapor sıfırlandı.",
       "toast.stepBlocked": "Devam etmeden önce bu adımdaki eksikleri tamamlayınız.",
 
       /* -------- Erişilebilirlik / a11y -------- */
@@ -216,19 +194,7 @@ window.I18N = (function () {
     en: {
       "app.title": "Programme Self-Assessment Report System",
 
-      "header.noInstitution": "No institution defined",
-      "header.noProgramme": "No programme defined",
-      "header.lang": "Language",
-      "header.themeLight": "Light theme",
-      "header.themeDark": "Dark theme",
       "header.save": "Save",
-      "header.export": "Export",
-      "header.import": "Import",
-      "header.reset": "Reset",
-
-      "save.saving": "Saving…",
-      "save.never": "Not saved yet",
-      "save.at": "Last saved",
 
       "nav.steps": "Steps",
       "nav.progress": "Completion",
@@ -387,20 +353,11 @@ window.I18N = (function () {
       "done.keepNote":
         "The number is generated once and stored with the report; it does not change even if you reopen this screen.",
 
-      "confirm.confirm": "Confirm",
-      "confirm.cancel": "Cancel",
-      "confirm.resetTitle": "Reset report",
-      "confirm.resetBody":
-        "All entered data and evidence will be deleted. This cannot be undone. Do you want to continue?",
-
       "toast.saved": "Saved.",
       "toast.exported": "Report exported.",
       "toast.exportFailed": "The report could not be saved.",
       "toast.exportTooLarge":
         "The report is too large to save. Provide large evidence files as links rather than uploads.",
-      "toast.imported": "Report imported.",
-      "toast.importError": "The file could not be read. Select a valid report file.",
-      "toast.reset": "Report reset.",
       "toast.stepBlocked": "Complete the missing items in this step before continuing.",
 
       "a11y.tabs": "Report sections",
