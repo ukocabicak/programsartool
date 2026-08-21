@@ -294,111 +294,6 @@
   flex-direction: column;
 }
 
-.tabbar-wrap {
-  position: sticky;
-  top: var(--header-height);
-  z-index: var(--z-sticky);
-}
-
-/* --------------------------------------------------------------------------
-   Sekme çubuğu kaydırma rayı / tab bar scroll rail
-
-   Dokuz ölçüt sekmesi çubuğa aynı anda sığmaz. Dokunmatikte parmakla
-   kaydırılır; farede görünür bir tutamak olmadığından iki uçta ok
-   düğmeleri durur. Oklar yalnızca o yönde kaydırılacak sekme kaldığında
-   belirir, altlarındaki geçiş de sekmelerin devam ettiğini gösterir.
-   -------------------------------------------------------------------------- */
-.tabbar-rail {
-  position: relative;
-}
-
-.tabbar-scroll {
-  position: absolute;
-  top: 0;
-  bottom: 1px; /* çubuğun alt çizgisi görünmeye devam etsin */
-  width: 52px;
-  /* Çubuk .glass olduğu için konumlandırılmıştır ve DOM'da soldaki oktan
-     sonra gelir; z-index verilmezse o ok çubuğun altında kalır ve
-     tıklamayı sekmeler yakalar. */
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  border: 0;
-  padding: 0;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--duration-base) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
-}
-
-.tabbar-scroll--prev {
-  left: 0;
-  justify-content: flex-start;
-  padding-left: var(--space-2);
-  background: linear-gradient(
-    to right,
-    var(--color-surface) 55%,
-    rgba(0, 0, 0, 0) 100%
-  );
-}
-
-.tabbar-scroll--next {
-  right: 0;
-  justify-content: flex-end;
-  padding-right: var(--space-2);
-  background: linear-gradient(
-    to left,
-    var(--color-surface) 55%,
-    rgba(0, 0, 0, 0) 100%
-  );
-}
-
-/* Ok yalnızca o yönde gidilecek yer varken tıklanabilir olur. */
-.tabbar-rail[data-overflow~="prev"] .tabbar-scroll--prev,
-.tabbar-rail[data-overflow~="next"] .tabbar-scroll--next {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.tabbar-scroll:hover {
-  color: var(--color-brand);
-}
-
-.tabbar-scroll:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: -2px;
-}
-
-.tabbar-scroll svg {
-  width: 20px;
-  height: 20px;
-  /* Yüzeyden ayrılsın: geçişin üstünde küçük bir daire üzerinde durur. */
-  border-radius: 50%;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-  padding: 3px;
-}
-
-/* Ok göründüğünde altındaki sekme yarım kalmasın diye çubuğun kendi
-   iç boşluğu genişler. */
-.tabbar-rail[data-overflow~="prev"] .tabbar {
-  scroll-padding-left: 52px;
-}
-
-.tabbar-rail[data-overflow~="next"] .tabbar {
-  scroll-padding-right: 52px;
-}
-
-/* Dokunmatikte çubuk zaten parmakla kaydırılıyor; oklar yalnızca yer
-   kaplar. Ayrım ekran genişliğine değil imleç türüne bakar — dar bir
-   masaüstü penceresinde de oklar gerekir. */
-@media (pointer: coarse) {
-  .tabbar-scroll {
-    display: none;
-  }
-}
 
 .step-view {
   padding: var(--space-8) var(--space-8) var(--space-16);
@@ -547,10 +442,6 @@
     border-right: none;
     border-bottom: 1px solid var(--color-border);
   }
-
-  .tabbar-wrap {
-    position: static;
-  }
 }
 
 @media (max-width: 720px) {
@@ -561,10 +452,6 @@
 
   .brand__sub {
     display: none;
-  }
-
-  .tabbar {
-    padding: 0 var(--space-4);
   }
 
   .step-view {
@@ -647,76 +534,6 @@
 /* ==========================================================================
    Uygulamaya özgü bileşenler / application-specific components
    ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   Sekme etiketi (iki satırlı) / two-line tab label
-   -------------------------------------------------------------------------- */
-.tab__label {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.2;
-}
-
-.tab__label-sub {
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-regular);
-  color: var(--color-text-subtle);
-  letter-spacing: 0;
-}
-
-.tab[aria-selected="true"] .tab__label-sub {
-  color: var(--color-text-muted);
-}
-
-/* --------------------------------------------------------------------------
-   Belirgin tamamlanma çubuğu / prominent completion bar
-   -------------------------------------------------------------------------- */
-.topbar-progress {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-6);
-  border-radius: 0;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-}
-
-.topbar-progress__label {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.topbar-progress__title {
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  color: var(--color-text-muted);
-}
-
-.topbar-progress__stat {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.topbar-progress__stat strong {
-  font-size: var(--text-lg);
-  color: var(--color-brand);
-  font-weight: var(--weight-bold);
-}
-
-:root[data-theme="dark"] .topbar-progress__stat strong {
-  color: var(--color-accent);
-}
-
-.topbar-progress .progress__track {
-  height: 8px;
-}
 
 /* --------------------------------------------------------------------------
    Program seçici / programme picker
@@ -811,9 +628,6 @@
 @media (max-width: 720px) {
   .picker__grid {
     grid-template-columns: 1fr;
-  }
-  .topbar-progress {
-    padding: var(--space-3) var(--space-4);
   }
 }
 

@@ -32,8 +32,6 @@ window.I18N = (function () {
       "nav.progress": "Tamamlanma",
       "nav.next": "Sonraki adım",
       "nav.prev": "Önceki adım",
-      "nav.tabsPrev": "Önceki bölümleri göster",
-      "nav.tabsNext": "Sonraki bölümleri göster",
       "nav.submit": "Raporu Tamamla",
 
       "summary.title": "Rapor Özeti",
@@ -251,8 +249,6 @@ window.I18N = (function () {
       "nav.progress": "Completion",
       "nav.next": "Next step",
       "nav.prev": "Previous step",
-      "nav.tabsPrev": "Show previous sections",
-      "nav.tabsNext": "Show next sections",
       "nav.submit": "Complete Report",
 
       "summary.title": "Report Summary",
