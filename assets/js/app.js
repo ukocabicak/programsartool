@@ -81,8 +81,8 @@
     document.getElementById("brand-sub").textContent = t("app.subtitle");
     var skip = document.querySelector(".skip-link");
     if (skip) skip.textContent = t("a11y.skip");
-    document.getElementById("ctx-label").textContent = t("header.report");
-    document.getElementById("ctx-value").textContent = programmeLabel();
+    document.getElementById("ctx-institution").textContent = institutionLabel();
+    document.getElementById("ctx-programme").textContent = programmeLabel();
     document.title = "YÖKAK · " + t("app.title");
 
     var host = document.getElementById("header-actions");
@@ -194,6 +194,12 @@
     );
   }
 
+  /** Üst bardaki bağlam: raporun konusu olan kurum. */
+  function institutionLabel() {
+    var name = S.get("institution.name", "");
+    return name && String(name).trim() ? String(name).trim() : t("header.noInstitution");
+  }
+
   /** Üst bardaki bağlam: raporun konusu olan program. */
   function programmeLabel() {
     var name = S.get("qualification.name", "");
@@ -232,36 +238,6 @@
   function buildSidebar() {
     var host = document.getElementById("sidebar");
     host.innerHTML = "";
-
-    /* -- genel ilerleme -- */
-    var p = V.progress(tabs, S);
-    var summary = el("section", { class: "sidebar-section" }, [
-      el("h2", { class: "sidebar-section__title", text: t("summary.title") }),
-      el("div", { class: "sidebar-summary glass" }, [
-        el("div", { class: "progress" }, [
-          el("div", { class: "progress__meta" }, [
-            el("span", { text: t("nav.progress") }),
-            el("strong", { class: "count-roll", text: p.percent + "%" }),
-          ]),
-          el("div", {
-            class: "progress__track",
-            role: "progressbar",
-            "aria-valuenow": String(p.percent),
-            "aria-valuemin": "0",
-            "aria-valuemax": "100",
-            "aria-label": t("nav.progress"),
-          }, [el("div", { class: "progress__fill", style: "width:" + p.percent + "%" })]),
-        ]),
-        row(t("summary.programme"), programmeLabel()),
-        row(t("summary.institution"), S.get("institution.name") || "—"),
-        row(t("summary.level"), levelLabel()),
-        complianceRow(),
-        evidenceRow(),
-        row(t("summary.completed"), p.done + " / " + p.total),
-        row(t("summary.missing"), String(p.missing)),
-      ]),
-    ]);
-    host.appendChild(summary);
 
     /* -- bölüm ağacı -- */
     /* Tabbar'daki tüm sekmeler burada bir ağaç olarak tekrarlanır: her
@@ -343,6 +319,36 @@
 
     treeSection.appendChild(tree);
     host.appendChild(treeSection);
+
+    /* -- genel ilerleme -- */
+    var p = V.progress(tabs, S);
+    var summary = el("section", { class: "sidebar-section" }, [
+      el("h2", { class: "sidebar-section__title", text: t("summary.title") }),
+      el("div", { class: "sidebar-summary glass" }, [
+        el("div", { class: "progress" }, [
+          el("div", { class: "progress__meta" }, [
+            el("span", { text: t("nav.progress") }),
+            el("strong", { class: "count-roll", text: p.percent + "%" }),
+          ]),
+          el("div", {
+            class: "progress__track",
+            role: "progressbar",
+            "aria-valuenow": String(p.percent),
+            "aria-valuemin": "0",
+            "aria-valuemax": "100",
+            "aria-label": t("nav.progress"),
+          }, [el("div", { class: "progress__fill", style: "width:" + p.percent + "%" })]),
+        ]),
+        row(t("summary.programme"), programmeLabel()),
+        row(t("summary.institution"), S.get("institution.name") || "—"),
+        row(t("summary.level"), levelLabel()),
+        complianceRow(),
+        evidenceRow(),
+        row(t("summary.completed"), p.done + " / " + p.total),
+        row(t("summary.missing"), String(p.missing)),
+      ]),
+    ]);
+    host.appendChild(summary);
   }
 
   function row(label, value) {
@@ -497,8 +503,10 @@
   }
 
   function refreshChrome() {
-    var ctx = document.getElementById("ctx-value");
-    if (ctx) ctx.textContent = programmeLabel();
+    var ctxInstitution = document.getElementById("ctx-institution");
+    if (ctxInstitution) ctxInstitution.textContent = institutionLabel();
+    var ctxProgramme = document.getElementById("ctx-programme");
+    if (ctxProgramme) ctxProgramme.textContent = programmeLabel();
     buildSidebar();
   }
 

@@ -13,7 +13,7 @@ window.I18N = (function () {
       "app.title": "Program Öz Değerlendirme Raporu Sistemi",
       "app.subtitle": "Program Öz Değerlendirme Sistemi",
 
-      "header.report": "Rapor",
+      "header.noInstitution": "Kurum tanımlanmadı",
       "header.noProgramme": "Program tanımlanmadı",
       "header.lang": "Dil",
       "header.themeLight": "Açık tema",
@@ -230,7 +230,7 @@ window.I18N = (function () {
       "app.title": "Programme Self-Assessment Report System",
       "app.subtitle": "Programme Self-Assessment System",
 
-      "header.report": "Report",
+      "header.noInstitution": "No institution defined",
       "header.noProgramme": "No programme defined",
       "header.lang": "Language",
       "header.themeLight": "Light theme",
