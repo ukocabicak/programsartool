@@ -296,6 +296,11 @@
      ================================================================== */
   var lastScrolledTab = -1;
 
+  /** Kenar çubuğundaki ağaçta kullanıcının açık bıraktığı sekmeler
+   *  (tab.id → boolean). Belirtilmeyen sekmeler varsayılan olarak yalnızca
+   *  etkinken açılır. */
+  var treeOpen = {};
+
   /** Çubuğun iki ucunda kaydırılacak yer kaldı mı? */
   function syncTabScroll() {
     var bar = document.getElementById("tabbar");
@@ -368,8 +373,6 @@
     var host = document.getElementById("sidebar");
     host.innerHTML = "";
 
-    var tab = tabs[state.tab];
-
     /* -- genel ilerleme -- */
     var p = V.progress(tabs, S);
     var summary = el("section", { class: "sidebar-section" }, [
@@ -400,47 +403,86 @@
     ]);
     host.appendChild(summary);
 
-    /* -- adımlar -- */
-    var steps = el("section", { class: "sidebar-section" }, [
-      el("h2", { class: "sidebar-section__title", text: pick(tab.label) + " · " + t("nav.steps") }),
+    /* -- bölüm ağacı -- */
+    /* Tabbar'daki tüm sekmeler burada bir ağaç olarak tekrarlanır: her
+       sekme bir dal, altındaki adımlar yapraklardır. Böylece kullanıcı
+       sekme çubuğuna gitmeden raporun tamamında gezinebilir. */
+    var treeSection = el("section", { class: "sidebar-section" }, [
+      el("h2", { class: "sidebar-section__title", text: t("nav.sections") }),
     ]);
-    var stepper = el("nav", { class: "stepper", "aria-label": t("a11y.steps") });
+    var tree = el("nav", { class: "tree", "aria-label": t("a11y.tabs") });
 
-    var shown = 0;
-    tab.steps.forEach(function (step, i) {
-      if (!V.isVisible(step, S)) return; // koşulu sağlanmayan adım listelenmez
-      shown++;
-      var st = V.stepState(step, S);
-      var errs = V.stepErrorCount(step, S);
-      var cls = "step-item";
-      if (st === "complete") cls += " step-item--complete";
-      else if (st === "partial") cls += " step-item--error";
+    tabs.forEach(function (grp, ti) {
+      var prog = V.tabProgress(grp, S);
+      var complete = prog.total > 0 && prog.done === prog.total;
 
-      var marker = el("span", { class: "step-item__marker" });
-      if (st === "complete") marker.appendChild(icon("check"));
-      else marker.textContent = String(shown);
+      var badge = el("span", { class: "tab__index" });
+      if (complete) badge.appendChild(icon("check"));
+      else badge.textContent = String(ti + 1);
 
-      var item = el("button", {
-        type: "button",
-        class: cls,
-        "aria-current": i === state.step ? "step" : null,
-      }, [
-        marker,
-        el("span", { class: "step-item__body" }, [
-          el("span", { class: "step-item__title", text: pick(step.short || step.title) }),
-          errs > 0 && st !== "empty"
-            ? el("span", { class: "step-item__meta", text: t("validate.summary", { n: errs }) })
-            : null,
-        ]),
-      ]);
-      item.addEventListener("click", function () {
-        go(state.tab, i);
+      var summary = el(
+        "summary",
+        { class: "tree-group__head" + (complete ? " tab--complete" : ""), title: pick(grp.label) },
+        [icon("chevronRight", "tree-group__chevron"), badge, el("span", { class: "tree-group__label", text: pick(grp.short || grp.label) })]
+      );
+
+      var stepper = el("nav", { class: "stepper tree-group__steps", "aria-label": pick(grp.label) + " · " + t("nav.steps") });
+      var shown = 0;
+      grp.steps.forEach(function (step, i) {
+        if (!V.isVisible(step, S)) return; // koşulu sağlanmayan adım listelenmez
+        shown++;
+        var st = V.stepState(step, S);
+        var errs = V.stepErrorCount(step, S);
+        var cls = "step-item";
+        if (st === "complete") cls += " step-item--complete";
+        else if (st === "partial") cls += " step-item--error";
+
+        var marker = el("span", { class: "step-item__marker" });
+        if (st === "complete") marker.appendChild(icon("check"));
+        else marker.textContent = String(shown);
+
+        var item = el("button", {
+          type: "button",
+          class: cls,
+          "aria-current": ti === state.tab && i === state.step ? "step" : null,
+        }, [
+          marker,
+          el("span", { class: "step-item__body" }, [
+            el("span", { class: "step-item__title", text: pick(step.short || step.title) }),
+            errs > 0 && st !== "empty"
+              ? el("span", { class: "step-item__meta", text: t("validate.summary", { n: errs }) })
+              : null,
+          ]),
+        ]);
+        item.addEventListener("click", function () {
+          go(ti, i);
+        });
+        stepper.appendChild(item);
       });
-      stepper.appendChild(item);
+
+      /* Etkin sekme her zaman açık görünür; öteki sekmelerde kullanıcının
+         daha önce bıraktığı açık/kapalı tercih korunur. */
+      var manual = treeOpen[grp.id];
+      var open = manual === undefined ? ti === state.tab : manual;
+
+      var details = el(
+        "details",
+        { class: "tree-group" + (ti === state.tab ? " tree-group--active" : ""), open: open },
+        [summary, stepper]
+      );
+      /* "toggle" olayı yerine tıklama dinlenir: bazı tarayıcılarda başlangıçta
+         açık kurulan bir <details>, hiç tıklanmadan bir kere "toggle" olayı
+         yayar; bu, dalı kullanıcı hiç dokunmamışken kalıcı olarak açık
+         işaretlerdi. Tıklama anında durum henüz tersine dönmemiştir. */
+      summary.addEventListener("click", function () {
+        treeOpen[grp.id] = !details.open;
+      });
+
+      tree.appendChild(details);
     });
 
-    steps.appendChild(stepper);
-    host.appendChild(steps);
+    treeSection.appendChild(tree);
+    host.appendChild(treeSection);
   }
 
   function row(label, value) {
@@ -1011,6 +1053,8 @@
       want = after.length ? after[0] : vis[vis.length - 1];
     }
     state.step = want;
+    // Gidilen sekme ağaçta her zaman görünür açılır, daha önce kapatılmış olsa bile.
+    treeOpen[tabs[state.tab].id] = true;
     render();
   }
 

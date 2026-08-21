@@ -28,6 +28,7 @@ window.I18N = (function () {
       "save.at": "Son kayıt",
 
       "nav.steps": "Adımlar",
+      "nav.sections": "Bölümler",
       "nav.progress": "Tamamlanma",
       "nav.next": "Sonraki adım",
       "nav.prev": "Önceki adım",
@@ -246,6 +247,7 @@ window.I18N = (function () {
       "save.at": "Last saved",
 
       "nav.steps": "Steps",
+      "nav.sections": "Sections",
       "nav.progress": "Completion",
       "nav.next": "Next step",
       "nav.prev": "Previous step",
