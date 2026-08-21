@@ -351,10 +351,62 @@
 }
 
 /* --------------------------------------------------------------------------
-   Sekme rozeti / tab badge
-   Sidebar'daki bölüm ağacında (.tree-group__head) numaralı/onaylı rozet
-   olarak kullanılır.
+   Sekmeler / Tabs
    -------------------------------------------------------------------------- */
+.tabbar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 var(--space-6);
+  scrollbar-width: none;
+}
+
+.tabbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ok düğmesiyle ve sekme değişiminde yumuşak kaydırma; hareketi azaltan
+   kullanıcıda anında atlar. */
+@media (prefers-reduced-motion: no-preference) {
+  .tabbar {
+    scroll-behavior: smooth;
+  }
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-4);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--color-brand);
+  border-bottom-color: var(--color-brand);
+  font-weight: var(--weight-semibold);
+}
+
+:root[data-theme="dark"] .tab[aria-selected="true"] {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
 .tab__index {
   display: inline-flex;
   align-items: center;
@@ -368,6 +420,11 @@
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
   flex: none;
+}
+
+.tab[aria-selected="true"] .tab__index {
+  background: var(--color-brand);
+  color: var(--color-text-on-brand);
 }
 
 .tab--complete .tab__index {

@@ -903,10 +903,62 @@ legend {
 }
 
 /* --------------------------------------------------------------------------
-   Sekme rozeti / tab badge
-   Sidebar'daki bölüm ağacında (.tree-group__head) numaralı/onaylı rozet
-   olarak kullanılır.
+   Sekmeler / Tabs
    -------------------------------------------------------------------------- */
+.tabbar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 var(--space-6);
+  scrollbar-width: none;
+}
+
+.tabbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ok düğmesiyle ve sekme değişiminde yumuşak kaydırma; hareketi azaltan
+   kullanıcıda anında atlar. */
+@media (prefers-reduced-motion: no-preference) {
+  .tabbar {
+    scroll-behavior: smooth;
+  }
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-4);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--color-brand);
+  border-bottom-color: var(--color-brand);
+  font-weight: var(--weight-semibold);
+}
+
+:root[data-theme="dark"] .tab[aria-selected="true"] {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
 .tab__index {
   display: inline-flex;
   align-items: center;
@@ -920,6 +972,11 @@ legend {
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
   flex: none;
+}
+
+.tab[aria-selected="true"] .tab__index {
+  background: var(--color-brand);
+  color: var(--color-text-on-brand);
 }
 
 .tab--complete .tab__index {
@@ -2892,6 +2949,111 @@ legend {
   flex-direction: column;
 }
 
+.tabbar-wrap {
+  position: sticky;
+  top: var(--header-height);
+  z-index: var(--z-sticky);
+}
+
+/* --------------------------------------------------------------------------
+   Sekme çubuğu kaydırma rayı / tab bar scroll rail
+
+   Dokuz ölçüt sekmesi çubuğa aynı anda sığmaz. Dokunmatikte parmakla
+   kaydırılır; farede görünür bir tutamak olmadığından iki uçta ok
+   düğmeleri durur. Oklar yalnızca o yönde kaydırılacak sekme kaldığında
+   belirir, altlarındaki geçiş de sekmelerin devam ettiğini gösterir.
+   -------------------------------------------------------------------------- */
+.tabbar-rail {
+  position: relative;
+}
+
+.tabbar-scroll {
+  position: absolute;
+  top: 0;
+  bottom: 1px; /* çubuğun alt çizgisi görünmeye devam etsin */
+  width: 52px;
+  /* Çubuk .glass olduğu için konumlandırılmıştır ve DOM'da soldaki oktan
+     sonra gelir; z-index verilmezse o ok çubuğun altında kalır ve
+     tıklamayı sekmeler yakalar. */
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  border: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.tabbar-scroll--prev {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: var(--space-2);
+  background: linear-gradient(
+    to right,
+    var(--color-surface) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.tabbar-scroll--next {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: var(--space-2);
+  background: linear-gradient(
+    to left,
+    var(--color-surface) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Ok yalnızca o yönde gidilecek yer varken tıklanabilir olur. */
+.tabbar-rail[data-overflow~="prev"] .tabbar-scroll--prev,
+.tabbar-rail[data-overflow~="next"] .tabbar-scroll--next {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tabbar-scroll:hover {
+  color: var(--color-brand);
+}
+
+.tabbar-scroll:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.tabbar-scroll svg {
+  width: 20px;
+  height: 20px;
+  /* Yüzeyden ayrılsın: geçişin üstünde küçük bir daire üzerinde durur. */
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  padding: 3px;
+}
+
+/* Ok göründüğünde altındaki sekme yarım kalmasın diye çubuğun kendi
+   iç boşluğu genişler. */
+.tabbar-rail[data-overflow~="prev"] .tabbar {
+  scroll-padding-left: 52px;
+}
+
+.tabbar-rail[data-overflow~="next"] .tabbar {
+  scroll-padding-right: 52px;
+}
+
+/* Dokunmatikte çubuk zaten parmakla kaydırılıyor; oklar yalnızca yer
+   kaplar. Ayrım ekran genişliğine değil imleç türüne bakar — dar bir
+   masaüstü penceresinde de oklar gerekir. */
+@media (pointer: coarse) {
+  .tabbar-scroll {
+    display: none;
+  }
+}
 
 .step-view {
   padding: var(--space-8) var(--space-8) var(--space-16);
@@ -3040,6 +3202,10 @@ legend {
     border-right: none;
     border-bottom: 1px solid var(--color-border);
   }
+
+  .tabbar-wrap {
+    position: static;
+  }
 }
 
 @media (max-width: 720px) {
@@ -3050,6 +3216,10 @@ legend {
 
   .brand__sub {
     display: none;
+  }
+
+  .tabbar {
+    padding: 0 var(--space-4);
   }
 
   .step-view {
@@ -3132,6 +3302,76 @@ legend {
 /* ==========================================================================
    Uygulamaya özgü bileşenler / application-specific components
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Sekme etiketi (iki satırlı) / two-line tab label
+   -------------------------------------------------------------------------- */
+.tab__label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.tab__label-sub {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-regular);
+  color: var(--color-text-subtle);
+  letter-spacing: 0;
+}
+
+.tab[aria-selected="true"] .tab__label-sub {
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Belirgin tamamlanma çubuğu / prominent completion bar
+   -------------------------------------------------------------------------- */
+.topbar-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.topbar-progress__label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.topbar-progress__title {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-muted);
+}
+
+.topbar-progress__stat {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.topbar-progress__stat strong {
+  font-size: var(--text-lg);
+  color: var(--color-brand);
+  font-weight: var(--weight-bold);
+}
+
+:root[data-theme="dark"] .topbar-progress__stat strong {
+  color: var(--color-accent);
+}
+
+.topbar-progress .progress__track {
+  height: 8px;
+}
 
 /* --------------------------------------------------------------------------
    Program seçici / programme picker
@@ -3226,6 +3466,9 @@ legend {
 @media (max-width: 720px) {
   .picker__grid {
     grid-template-columns: 1fr;
+  }
+  .topbar-progress {
+    padding: var(--space-3) var(--space-4);
   }
 }
 
@@ -4276,6 +4519,31 @@ legend {
         <aside class="app-sidebar" id="sidebar"></aside>
 
         <main class="app-main">
+          <div class="tabbar-wrap">
+            <!-- Kaydırma okları yalnızca fare içindir: klavye zaten sekme
+                 çubuğunda ok tuşlarıyla geziniyor, ekran okuyucu da sekme
+                 listesini doğrudan okuyor. Bu yüzden odak sırasına
+                 girmezler. -->
+            <div class="tabbar-rail" id="tabbar-rail">
+              <button
+                type="button"
+                class="tabbar-scroll tabbar-scroll--prev"
+                id="tabbar-prev"
+                tabindex="-1"
+                aria-hidden="true"
+              ></button>
+              <nav class="tabbar glass" id="tabbar"></nav>
+              <button
+                type="button"
+                class="tabbar-scroll tabbar-scroll--next"
+                id="tabbar-next"
+                tabindex="-1"
+                aria-hidden="true"
+              ></button>
+            </div>
+            <div id="topprogress"></div>
+          </div>
+
           <div id="stepview"></div>
         </main>
       </div>
@@ -4324,6 +4592,8 @@ window.I18N = (function () {
       "nav.progress": "Tamamlanma",
       "nav.next": "Sonraki adım",
       "nav.prev": "Önceki adım",
+      "nav.tabsPrev": "Önceki bölümleri göster",
+      "nav.tabsNext": "Sonraki bölümleri göster",
       "nav.submit": "Raporu Tamamla",
 
       "summary.title": "Rapor Özeti",
@@ -4541,6 +4811,8 @@ window.I18N = (function () {
       "nav.progress": "Completion",
       "nav.next": "Next step",
       "nav.prev": "Previous step",
+      "nav.tabsPrev": "Show previous sections",
+      "nav.tabsNext": "Show next sections",
       "nav.submit": "Complete Report",
 
       "summary.title": "Report Summary",
@@ -11915,6 +12187,8 @@ window.Fields = (function () {
     });
 
     buildHeader();
+    initTabScroll();
+    buildTabs();
     render();
     bindKeys();
 
@@ -11958,6 +12232,7 @@ window.Fields = (function () {
         window.I18N.set(code);
         S.setPref("lang", code);
         buildHeader();
+        buildTabs();
         render();
       });
       langBox.appendChild(b);
@@ -12000,6 +12275,7 @@ window.Fields = (function () {
         try {
           S.importJSON(String(reader.result));
           toast(t("toast.imported"), "success");
+          buildTabs();
           render();
         } catch (e) {
           toast(t("toast.importError"), "danger");
@@ -12077,10 +12353,146 @@ window.Fields = (function () {
       : t("save.never");
   }
 
+  /* ==================================================================
+     Sekme çubuğu / tab bar
+     ================================================================== */
+  function buildTabs() {
+    var bar = document.getElementById("tabbar");
+    /* Çubuk her veri değişiminde yeniden kurulur; kaydırma konumu
+       korunmazsa kullanıcı yazarken çubuk sürekli başa dönerdi. */
+    var scrollLeft = bar.scrollLeft;
+    bar.innerHTML = "";
+    bar.setAttribute("role", "tablist");
+    bar.setAttribute("aria-label", t("a11y.tabs"));
+
+    tabs.forEach(function (tab, i) {
+      var prog = V.tabProgress(tab, S);
+      var complete = prog.total > 0 && prog.done === prog.total;
+
+      var btn = el("button", {
+        type: "button",
+        role: "tab",
+        id: "tab_" + tab.id,
+        class: "tab" + (complete ? " tab--complete" : ""),
+        "aria-selected": i === state.tab ? "true" : "false",
+        "aria-controls": "panel_" + tab.id,
+        tabindex: i === state.tab ? "0" : "-1",
+      });
+
+      var index = el("span", { class: "tab__index" });
+      if (complete) index.appendChild(icon("check"));
+      else index.textContent = String(i + 1);
+      btn.appendChild(index);
+
+      /* Çubukta kısa ad durur; tam ad ipucunda, adım başlığında ve kenar
+         çubuğunda okunmayı sürdürür. */
+      var labelBox = el("span", { class: "tab__label" }, [
+        el("span", { class: "tab__label-main", text: pick(tab.short || tab.label) }),
+        el("span", {
+          class: "tab__label-sub",
+          text: tab.sublabel ? pick(tab.sublabel) : "",
+        }),
+      ]);
+      btn.setAttribute("title", pick(tab.label));
+      btn.appendChild(labelBox);
+
+      btn.addEventListener("click", function () {
+        go(i, 0);
+      });
+      bar.appendChild(btn);
+    });
+
+    /* Yeniden kurulduğu için kaydırma konumu elle geri verilir. Etkin
+       sekme değiştiyse konum korunmaz, yeni sekme görünüre getirilir. */
+    if (state.tab === lastScrolledTab) {
+      bar.scrollLeft = scrollLeft;
+    } else {
+      lastScrolledTab = state.tab;
+      revealActiveTab();
+    }
+    syncTabScroll();
+  }
+
+  /* ==================================================================
+     Sekme çubuğu kaydırması / tab bar scrolling
+
+     Sekmeler çubuğa sığmadığında dokunmatikte parmakla kaydırılır. Fare
+     kullanıcısında görünür bir tutamak olmadığından üç yol açılır: iki
+     uçtaki ok düğmeleri, tekerleğin yatay kaydırmaya bağlanması ve etkin
+     sekmenin adım geçişlerinde kendiliğinden görünüre gelmesi. Klavye
+     zaten ok tuşlarıyla sekmeler arasında geziniyor.
+     ================================================================== */
+  var lastScrolledTab = -1;
+
   /** Kenar çubuğundaki ağaçta kullanıcının açık bıraktığı sekmeler
    *  (tab.id → boolean). Belirtilmeyen sekmeler varsayılan olarak yalnızca
    *  etkinken açılır. */
   var treeOpen = {};
+
+  /** Çubuğun iki ucunda kaydırılacak yer kaldı mı? */
+  function syncTabScroll() {
+    var bar = document.getElementById("tabbar");
+    var rail = document.getElementById("tabbar-rail");
+    if (!bar || !rail) return;
+    /* Kesirli piksellerde son sekme "bir tık" uzakta görünür; bir
+       piksellik pay bunu yutar. */
+    var max = bar.scrollWidth - bar.clientWidth;
+    var tokens = [];
+    if (bar.scrollLeft > 1) tokens.push("prev");
+    if (bar.scrollLeft < max - 1) tokens.push("next");
+    rail.setAttribute("data-overflow", tokens.join(" "));
+  }
+
+  /** Etkin sekmeyi çubukta görünür kılar. */
+  function revealActiveTab() {
+    var bar = document.getElementById("tabbar");
+    if (!bar) return;
+    var btn = bar.children[state.tab];
+    if (!btn) return;
+    /* scrollIntoView sayfayı da kaydırabildiğinden konum elle hesaplanır:
+       sekmeyi çubuğun ortasına yaklaştır, uçlarda taşmayı kırp. */
+    var target = btn.offsetLeft - (bar.clientWidth - btn.offsetWidth) / 2;
+    bar.scrollLeft = Math.max(0, Math.min(target, bar.scrollWidth - bar.clientWidth));
+  }
+
+  function initTabScroll() {
+    var bar = document.getElementById("tabbar");
+    var rail = document.getElementById("tabbar-rail");
+    if (!bar || !rail) return;
+
+    [
+      { id: "tabbar-prev", dir: -1, iconName: "chevronLeft", key: "nav.tabsPrev" },
+      { id: "tabbar-next", dir: 1, iconName: "chevronRight", key: "nav.tabsNext" },
+    ].forEach(function (spec) {
+      var btn = document.getElementById(spec.id);
+      if (!btn) return;
+      btn.innerHTML = "";
+      btn.appendChild(icon(spec.iconName));
+      btn.setAttribute("title", t(spec.key));
+      btn.addEventListener("click", function () {
+        // Bir tam ekran değil, çoğunu kaydır: kenardaki sekme bağlam kalsın.
+        bar.scrollLeft += spec.dir * bar.clientWidth * 0.8;
+      });
+    });
+
+    bar.addEventListener("scroll", syncTabScroll, { passive: true });
+
+    /* Dikey tekerleği yatay kaydırmaya çevir. Yatay tekerleği olan fareler
+       ve izleme yüzeyleri kendi eksenlerinde çalışmayı sürdürür. */
+    bar.addEventListener(
+      "wheel",
+      function (e) {
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        if (bar.scrollWidth <= bar.clientWidth) return;
+        e.preventDefault();
+        bar.scrollLeft += e.deltaY;
+      },
+      { passive: false }
+    );
+
+    window.addEventListener("resize", syncTabScroll);
+    syncTabScroll();
+  }
 
   /* ==================================================================
      Kenar çubuğu / sidebar (adımlar + özet)
@@ -12272,6 +12684,34 @@ window.Fields = (function () {
   }
 
   /* ==================================================================
+     Ana ilerleme çubuğu / prominent completion bar
+     ================================================================== */
+  function buildTopProgress() {
+    var host = document.getElementById("topprogress");
+    var p = V.progress(tabs, S);
+    host.innerHTML = "";
+    host.appendChild(
+      el("div", { class: "topbar-progress glass" }, [
+        el("div", { class: "topbar-progress__label" }, [
+          el("span", { class: "topbar-progress__title", text: t("nav.progress") }),
+          el("span", { class: "topbar-progress__stat" }, [
+            el("strong", { class: "count-roll", text: p.percent + "%" }),
+            el("span", { text: " · " + p.done + "/" + p.total }),
+          ]),
+        ]),
+        el("div", {
+          class: "progress__track",
+          role: "progressbar",
+          "aria-valuenow": String(p.percent),
+          "aria-valuemin": "0",
+          "aria-valuemax": "100",
+          "aria-label": t("nav.progress"),
+        }, [el("div", { class: "progress__fill", style: "width:" + p.percent + "%" })]),
+      ])
+    );
+  }
+
+  /* ==================================================================
      Adım görünümü / step view
      ================================================================== */
   /**
@@ -12358,6 +12798,8 @@ window.Fields = (function () {
     var ctxProgramme = document.getElementById("ctx-programme");
     if (ctxProgramme) ctxProgramme.textContent = programmeLabel();
     buildSidebar();
+    buildTopProgress();
+    buildTabs();
   }
 
   /**
@@ -12791,6 +13233,17 @@ window.Fields = (function () {
         e.preventDefault();
         goPrev();
       }
+    });
+
+    // Sekme çubuğunda ok tuşlarıyla gezinme (WAI-ARIA tabs pattern)
+    document.getElementById("tabbar").addEventListener("keydown", function (e) {
+      var keys = { ArrowRight: 1, ArrowLeft: -1 };
+      if (!(e.key in keys)) return;
+      e.preventDefault();
+      var next = (state.tab + keys[e.key] + tabs.length) % tabs.length;
+      go(next, 0);
+      var btn = document.getElementById("tab_" + tabs[next].id);
+      if (btn) btn.focus();
     });
   }
 

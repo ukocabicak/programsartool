@@ -65,6 +65,31 @@
         <aside class="app-sidebar" id="sidebar"></aside>
 
         <main class="app-main">
+          <div class="tabbar-wrap">
+            <!-- Kaydırma okları yalnızca fare içindir: klavye zaten sekme
+                 çubuğunda ok tuşlarıyla geziniyor, ekran okuyucu da sekme
+                 listesini doğrudan okuyor. Bu yüzden odak sırasına
+                 girmezler. -->
+            <div class="tabbar-rail" id="tabbar-rail">
+              <button
+                type="button"
+                class="tabbar-scroll tabbar-scroll--prev"
+                id="tabbar-prev"
+                tabindex="-1"
+                aria-hidden="true"
+              ></button>
+              <nav class="tabbar glass" id="tabbar"></nav>
+              <button
+                type="button"
+                class="tabbar-scroll tabbar-scroll--next"
+                id="tabbar-next"
+                tabindex="-1"
+                aria-hidden="true"
+              ></button>
+            </div>
+            <div id="topprogress"></div>
+          </div>
+
           <div id="stepview"></div>
         </main>
       </div>
